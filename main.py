@@ -23,7 +23,7 @@ from bokeh.plotting import figure
 import numpy as np
 from scipy.stats import chi2_contingency
 
-DATA_DIR = "/home/cloud-user/taito_wrk/DONOTREMOVE/visualization_paper_for_ICAME/"
+#DATA_DIR = "/home/cloud-user/taito_wrk/DONOTREMOVE/visualization_paper_for_ICAME/"
 DEFAULT_TICKERS= ['FAREWELL','HUCK','BROWN-A','BROWN-B','BROWN-C','BROWN-D',
                 'BROWN-E','BROWN-TOTAL','FROWN-TOTAL']
 
@@ -49,7 +49,7 @@ def gini(array):
     
 @lru_cache()
 def load_ticker(ticker):
-    fname = join(DATA_DIR, '%s.txt' % ticker)
+    fname = '%s.txt' % ticker
     data = pd.read_csv(fname, header=None,
                        names=['freq','word','na'],sep="\t",index_col=0)
     data=data.drop('na', axis=1)
