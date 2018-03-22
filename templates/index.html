@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>hover</title>
+    {{ bokeh_css }}
+    {{ bokeh_js }}
+  </head>
+  <body>
+    <style type="text/css">
+      {% include 'styles.css' %}
+    </style>
+    <H1><b>ZipfExplorer</b></H1>
+    <p>Select texts or corpora to explore with the drop-down menus</p>
+    <p>Use the tools to move around, zoom, and select specific words</p>
+    <p>The app may freeze if the hover tool is over lots of points in the same space - zoom in!</p>
+    {{ plot_div|indent(8) }}
+    {{ plot_script|indent(8) }}
+  </body>
+</html>

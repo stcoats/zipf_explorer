@@ -1,0 +1,3 @@
+.bk-tooltip>div:not(:first-child) {
+	display:none;
+}
