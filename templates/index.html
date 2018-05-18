@@ -2,19 +2,27 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>hover</title>
+    <title>App</title>
     {{ bokeh_css }}
     {{ bokeh_js }}
+    <script type="text/javascript" async
+      src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+    <style type="text/css">
+      {% include './styles.css' %}
+    </style>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
   </head>
   <body>
-    <style type="text/css">
-      {% include 'styles.css' %}
-    </style>
     <H1><b>ZipfExplorer</b></H1>
-    <p>Select texts or corpora to explore with the drop-down menus</p>
-    <p>Use the tools to move around, zoom, and select specific words</p>
-    <p>The app may freeze if the hover tool is over lots of points in the same space - zoom in!</p>
+    <p>Select texts or corpora to explore with the drop-down menus. The plot x-axes show word frequency ranks, while the y-axes show the relative frequency per 10k words (both on log scales). Use the plot tools to move around, zoom, and select specific words. The tooltip shows word, rank, frequency, relative frequency (per 10k words), log-likelihood <i>G</i>, and a p-value.</p>
+    <p>Selecting words on the plot or on the sortable tables below highlights them. The tables show word rank, frequency, difference in relative frequency per 10k words compared to the other text, and a log-likelihood measure (<a href="http://acl.ldc.upenn.edu/J/J93/J93-1003.pdf" target="_blank">Dunning's G</a>).</p>
+    <p>Words with positive rel_diff values are more frequent in the first text; those with negative values in the second text.</p>
+    <p>With the 'remove frequent words' drop-down menu, up to 200 of the most frequent words in English can be removed from the plots/tables. This can help to highlight content differences between the texts. The frequent words are from Google's <a href="https://catalog.ldc.upenn.edu/LDC2006T13" target="_blank">n-gram corpus</a> of 1 trillion words from public web pages.</p>
+    <p>The <a href="http://mathworld.wolfram.com/GiniCoefficient.html" target="_blank">Gini coefficient<a> is a measure of diversity ranging from 0 (all words have the same frequency) to a theoretical maximum of 1 (all words have frequency zero except one word). 
+    <p>The data consist of several literary texts and a corpus of inaugural addresses of U.S. presidents from 1789Â–Â–â€“2009 (provided by <a href="https://www.nltk.org/" target="_blank">NLTK<a>), two additional novels (Twain's <i>Huckleberry Finn</i> and Hemingway's <i>A Farewell to Arms</i>), the <a href="http://clu.uni.no/icame/manuals/BROWN/INDEX.HTM" target="_blank">Brown Corpus<a> and its subsections, and the <a href="http://clu.uni.no/icame/manuals/FROWN/INDEX.HTM" target="_blank">Freiburg-Brown Corpus of American English</a>, available via Clarin-NO's <a href="http://clarino.uib.no/korpuskel/page" target="_blank">Corpuscle</a> tool.</p>  
     {{ plot_div|indent(8) }}
     {{ plot_script|indent(8) }}
+    <p>Tool created by <a href="http://cc.oulu.fi/~scoats" target="_blank">Steven Coats<a></p> 
   </body>
 </html>
