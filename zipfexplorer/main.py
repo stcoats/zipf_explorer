@@ -145,13 +145,13 @@ TOOLS = "pan,wheel_zoom,box_select,reset,hover"
 
 left_lin = figure(tools=TOOLS,x_axis_type='log', y_axis_type='log',
 		  plot_width=450, plot_height=450, output_backend="webgl")
-left_lin.circle('rank_x', 'rel_x', source=source,alpha=0.6, size=6,selection_color="orange", hover_color="firebrick")
+left_lin.circle('rank_x', 'rel_x', source=source,alpha=0.6, size=10,selection_color="red", hover_color="red")
 hoverL = left_lin.select(dict(type=HoverTool))
 hoverL.tooltips={"word": "@word","rank":"@rank_x","freq":"@freq_x","per_10k":"@rel_x","LL":"@LL","pval":"@pval"}
 
 right_lin = figure(tools=TOOLS,x_axis_type='log',y_axis_type='log',
 		   plot_width=450, plot_height=450, output_backend="webgl")
-right_lin.circle('rank_y', 'rel_y', source=source,alpha=0.6, size=6,selection_color="orange", hover_color="firebrick")
+right_lin.circle('rank_y', 'rel_y', source=source,alpha=0.6, size=10,selection_color="red", hover_color="red")
 hoverR = right_lin.select(dict(type=HoverTool))
 hoverR.tooltips={"word": "@word","rank":"@rank_y","freq":"@freq_y","per_10k":"@rel_y","LL":"@LL","pval":"@pval"}
 
