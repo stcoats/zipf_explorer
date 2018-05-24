@@ -1,11 +1,12 @@
 
 
+
 from os.path import dirname, join
 
 import pandas as pd
 
 from bokeh.io import curdoc
-from bokeh.layouts import row, column, gridplot, widgetbox
+from bokeh.layouts import row, column, gridplot, widgetbox,Spacer
 from bokeh.models.widgets import RadioButtonGroup, Slider, DataTable, TableColumn
 from bokeh.models import ColumnDataSource, HoverTool, BoxSelectTool, CDSView, BooleanFilter,PanTool,WheelZoomTool,SaveTool,ResetTool,Label
 from bokeh.models.callbacks import CustomJS
@@ -19,7 +20,7 @@ stopw_file = join(dirname(__file__),'data', 'google_200words.txt')
 words=open(stopw_file).read()
 ss=words.split()
 
-DEFAULT_TICKERS= ['A_Farewell_to_Arms','Huckleberry_Finn',
+DEFAULT_TICKERS= ['hemingway-farewell','twain-huckleberry',
  'austen-emma',
  'austen-persuasion',
  'austen-sense',
@@ -103,8 +104,9 @@ def load_ticker(ticker):
 def get_data(t1, t2):
     df1 = load_ticker(t1)
     df2 = load_ticker(t2)
-    data = pd.merge(df1, df2, on='word',how='outer').fillna(0)
+    data = pd.merge(df1, df2, on='word',how='inner').fillna(0)
     data = data.dropna()
+    #data = data["rel_x" > 0
     data["rel_diff"]=round(data["rel_x"]-data["rel_y"],3)
     data["sum_x"]=data["freq_x"].sum()
     data["sum_y"]=data["freq_y"].sum()
@@ -116,8 +118,8 @@ def get_data(t1, t2):
     data = data[~data["word"].isin(ss[0:int(stopwords_1.value)])]
     return data
 
-ticker1 = Select(value='Huckleberry_Finn', options=nix('A_Farewell_to_Arms', DEFAULT_TICKERS))
-ticker2 = Select(value='A_Farewell_to_Arms', options=nix('Huckleberry_Finn', DEFAULT_TICKERS))
+ticker1 = Select(value='twain-huckleberry', options=nix('hemingway-farewell', DEFAULT_TICKERS))
+ticker2 = Select(value='hemingway-farewell', options=nix('twain-huckleberry', DEFAULT_TICKERS))
 
 stopwords_1 = Select(title="Remove most frequent words:", value="0", options=["0","10", "20", "50", "100", "200"])
 
@@ -130,7 +132,6 @@ custom_hover.tooltips = """
     <style>
         .bk-tooltip>div:not(:first-child) {display:none;}
     </style>
-
     <b>word: </b> @word <br>
     <b>rank: </b> @rank_x <br>
     <b>freq: </b> @freq_x <br>
@@ -143,17 +144,36 @@ custom_hover.tooltips = """
 
 TOOLS = "pan,wheel_zoom,box_select,reset,hover"
 
-left_lin = figure(tools=TOOLS,x_axis_type='log', y_axis_type='log',
-		  plot_width=450, plot_height=450, output_backend="webgl")
+left_lin = figure(tools=TOOLS,x_axis_type='linear', y_axis_type='linear', plot_width=400, plot_height=400, sizing_mode='fixed',
+		   output_backend="webgl")
 left_lin.circle('rank_x', 'rel_x', source=source,alpha=0.6, size=10,selection_color="red", hover_color="red")
 hoverL = left_lin.select(dict(type=HoverTool))
 hoverL.tooltips={"word": "@word","rank":"@rank_x","freq":"@freq_x","per_10k":"@rel_x","LL":"@LL","pval":"@pval"}
+panel_llin = Panel(child=left_lin, title='linear')
 
-right_lin = figure(tools=TOOLS,x_axis_type='log',y_axis_type='log',
-		   plot_width=450, plot_height=450, output_backend="webgl")
+left_log = figure(tools=TOOLS,x_axis_type='log', y_axis_type='log', plot_width=400, plot_height=400, sizing_mode='fixed',
+		   output_backend="webgl")
+left_log.circle('rank_x', 'rel_x', source=source,alpha=0.6, size=10,selection_color="red", hover_color="red")
+hoverL = left_log.select(dict(type=HoverTool))
+hoverL.tooltips={"word": "@word","rank":"@rank_x","freq":"@freq_x","per_10k":"@rel_x","LL":"@LL","pval":"@pval"}
+panel_llog = Panel(child=left_log, title='log')
+
+right_lin = figure(tools=TOOLS,x_axis_type='linear',y_axis_type='linear', plot_width=400, plot_height=400, sizing_mode='fixed',
+		    output_backend="webgl")
 right_lin.circle('rank_y', 'rel_y', source=source,alpha=0.6, size=10,selection_color="red", hover_color="red")
 hoverR = right_lin.select(dict(type=HoverTool))
 hoverR.tooltips={"word": "@word","rank":"@rank_y","freq":"@freq_y","per_10k":"@rel_y","LL":"@LL","pval":"@pval"}
+panel_rlin = Panel(child=right_lin, title='linear')
+
+right_log = figure(tools=TOOLS,x_axis_type='log',y_axis_type='log', plot_width=400, plot_height=400, sizing_mode='fixed',
+		    output_backend="webgl")
+right_log.circle('rank_y', 'rel_y', source=source,alpha=0.6, size=10,selection_color="red", hover_color="red")
+hoverR = right_log.select(dict(type=HoverTool))
+hoverR.tooltips={"word": "@word","rank":"@rank_y","freq":"@freq_y","per_10k":"@rel_y","LL":"@LL","pval":"@pval"}
+panel_rlog = Panel(child=right_log, title='log')
+
+tabs_l = Tabs(tabs=[panel_llin,panel_llog])
+tabs_r = Tabs(tabs=[panel_rlin,panel_rlog])
 
 columns_l = [
     TableColumn(field="rank_x", title="rank"),
@@ -169,14 +189,15 @@ columns_r = [
     TableColumn(field="rel_diff", title="rel_diff"),
     TableColumn(field="LL", title="Log-likelihood")
 ]
-top10_l = DataTable(source=source, columns=columns_l,width=450, height=450)
-top10_r = DataTable(source=source, columns=columns_r,width=450, height=450)
+top10_l = DataTable(source=source, columns=columns_l,width=400, height=350)
+top10_r = DataTable(source=source, columns=columns_r,width=400, height=350)
 #data[['rank_x','rank_y','freq_x','freq_y']]
 
-p = gridplot([[left_lin, right_lin],[top10_l,top10_r]],
+p = gridplot(children=[[tabs_l,Spacer(width=100), tabs_r],[top10_l,Spacer(width=10),top10_r]],
                         toolbar_location = "above",
                         toolbar_options=dict(logo=None),
-			#sizing_mode='stretch_both'
+			sizing_mode='fixed',
+			
                         )
 
 # set up callbacks
@@ -193,8 +214,10 @@ def update(selected=None):
     t1, t2 = ticker1.value, ticker2.value
     data = get_data(t1, t2)
     source.data = source.from_df(data[['word','rank_x','rank_y','freq_x','freq_y','sum_x','sum_y','rel_x','rel_y','rel_diff','LL','pval']])
-    left_lin.title.text = '%s, Gini coef. = %s' % (t1, round(gini(source.data["freq_x"][source.data["freq_x"]>0]),3))
-    right_lin.title.text = '%s, Gini coef. = %s' % (t2, round(gini(source.data["freq_y"][source.data["freq_y"]>0]),3))
+    left_lin.title.text = '%s, Gini coef. = %s' % (t1, round(gini(np.array(load_ticker(t1)[~load_ticker(t1)["word"].isin(ss[0:int(stopwords_1.value)])]["freq"].astype(float))),3))
+    right_lin.title.text = '%s, Gini coef. = %s' % (t2, round(gini(np.array(load_ticker(t2)[~load_ticker(t2)["word"].isin(ss[0:int(stopwords_1.value)])]["freq"].astype(float))),3))
+    left_log.title.text = '%s, Gini coef. = %s' % (t1, round(gini(np.array(load_ticker(t1)[~load_ticker(t1)["word"].isin(ss[0:int(stopwords_1.value)])]["freq"].astype(float))),3))
+    right_log.title.text = '%s, Gini coef. = %s' % (t2, round(gini(np.array(load_ticker(t2)[~load_ticker(t2)["word"].isin(ss[0:int(stopwords_1.value)])]["freq"].astype(float))),3))
 
 ticker1.on_change('value', ticker1_change)
 ticker2.on_change('value', ticker2_change)
@@ -212,11 +235,13 @@ source.on_change('selected', selection_change)
 
 MODE = 'fixed'
 
-widgets = widgetbox(ticker1, ticker2, stopwords_1, width=150)
+widgets = widgetbox(ticker1, ticker2, stopwords_1, width=100)
 main_row = row(p,widgets)
+sec_row = row(top10_r,Spacer(width=40),top10_r)
 layout = column(main_row)
 
 update()
 
 curdoc().add_root(layout)
 curdoc().title = "ZipfExplorer"
+
