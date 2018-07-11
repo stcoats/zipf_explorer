@@ -1,0 +1,12 @@
+.bk-tooltip>div:not(:first-child) {
+	display:none;
+}
+.header-wrapper {border-radius:6px;padding:30px;}
+.header-left-td {border-left:1px solid #2c3e50; padding: 10px;}
+body {padding:30px; font-family:'Franklin Gothic Book';}
+h3 a {padding-top:70px;}
+h3 a:hover {text-decoration:none;}
+.pub-img {max-height:130px;margin:15px;}
+.header-important {text-decoration:none;color:#18bc9c;}
+.wrapper {width:750px;}
+.glance td {padding:10px;}
