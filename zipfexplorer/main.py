@@ -221,6 +221,7 @@ def update(selected=None):
     left_log.title.text = '%s, Gini coef. = %s' % (t1, round(gini(np.array(load_ticker(t1)[~load_ticker(t1)["word"].isin(ss[0:int(stopwords_1.value)])]["freq"].astype(float))),3))
     right_log.title.text = '%s, Gini coef. = %s' % (t2, round(gini(np.array(load_ticker(t2)[~load_ticker(t2)["word"].isin(ss[0:int(stopwords_1.value)])]["freq"].astype(float))),3))
 
+
 ticker1.on_change('value', ticker1_change)
 ticker2.on_change('value', ticker2_change)
 
