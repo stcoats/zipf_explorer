@@ -216,7 +216,7 @@ def update(selected=None):
     data = get_data(t1, t2)
     source.data = source.from_df(data[['word','rank_x','rank_y','freq_x','freq_y','sum_x','sum_y','rel_x','rel_y','rel_diff','LL','pval']])
     selection = np.array(load_ticker(t1)[~load_ticker(t1)["word"].isin(ss[0:int(stopwords_1.value)])]["freq"].astype(float))
-    left_lin.title.text = '%s, Gini coef. = %s' % (t1, round(gini(selection),3)) + ', TTR = %s' % round(len(selection)/sum(selection),3)
+    left_lin.title.text = '%s, Gini coef. = %s' % (t1, round(gini(selection),3)) + ', TTR = %s' % round(len(selection)/sum(selection),3) + ', α = %s' % str(round(powerlaw.Fit(selection).alpha,3)) + ', Η = %s' % str(round(ent(selection),3))
     
     #left_lin.title.text = '%s, TTR = %s' % (t1, round(len(load_ticker(t1)[~load_ticker(t1)["word"].isin(ss[0:int(stopwords_1.value)])]["freq"].astype(float))/load_ticker(t1)[~load_ticker(t1)["word"].isin(ss[0:int(stopwords_1.value)])]["freq"].astype(float)).sum(),3) +\
     #', Gini = %s' % round(gini(load_ticker(t1)[~load_ticker(t1)["word"].isin(ss[0:int(stopwords_1.value)])]["freq"].astype(float)),3) +\
@@ -226,7 +226,10 @@ def update(selected=None):
     right_lin.title.text = '%s, Gini coef. = %s' % (t2, round(gini(np.array(load_ticker(t2)[~load_ticker(t2)["word"].isin(ss[0:int(stopwords_1.value)])]["freq"].astype(float))),3))
     left_log.title.text = '%s, Gini coef. = %s' % (t1, round(gini(np.array(load_ticker(t1)[~load_ticker(t1)["word"].isin(ss[0:int(stopwords_1.value)])]["freq"].astype(float))),3))
     right_log.title.text = '%s, Gini coef. = %s' % (t2, round(gini(np.array(load_ticker(t2)[~load_ticker(t2)["word"].isin(ss[0:int(stopwords_1.value)])]["freq"].astype(float))),3))
-
+    left_lin.title.text_font_size = '7pt'
+    left_log.title.text_font_size = '7pt'
+    right_lin.title.text_font_size = '7pt'
+    right_log.title.text_font_size = '7pt'
 
 ticker1.on_change('value', ticker1_change)
 ticker2.on_change('value', ticker2_change)
