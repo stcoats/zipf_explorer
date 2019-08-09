@@ -242,7 +242,7 @@ source.on_change('selected', selection_change)
 
 MODE = 'fixed'
 
-widgets = widgetbox(ticker1, ticker2, stopwords_1, width=100)
+widgets = widgetbox(ticker1, ticker2, stopwords_1, width=150)
 main_row = row(p,widgets)
 sec_row = row(top10_r,Spacer(width=40),top10_r)
 layout = column(main_row)
