@@ -143,7 +143,7 @@ custom_hover.tooltips = """
 """
 
 
-TOOLS = "pan,wheel_zoom,box_select,reset,hover"
+TOOLS = "pan,box_zoom,wheel_zoom,box_select,reset,hover"
 
 left_lin = figure(tools=TOOLS,x_axis_type='linear', y_axis_type='linear', plot_width=400, plot_height=400, sizing_mode='fixed',
 		   output_backend="webgl")
