@@ -5,7 +5,7 @@ from os.path import dirname, join
 
 import pandas as pd
 import powerlaw
-import scipy
+import scipy.stats
 from bokeh.io import curdoc
 from bokeh.layouts import row, column, gridplot, widgetbox,Spacer
 from bokeh.models.widgets import RadioButtonGroup, Slider, DataTable, TableColumn
@@ -216,7 +216,7 @@ def update(selected=None):
     data = get_data(t1, t2)
     source.data = source.from_df(data[['word','rank_x','rank_y','freq_x','freq_y','sum_x','sum_y','rel_x','rel_y','rel_diff','LL','pval']])
     selection = np.array(load_ticker(t1)[~load_ticker(t1)["word"].isin(ss[0:int(stopwords_1.value)])]["freq"].astype(float))
-    left_lin.title.text = '%s, Gini coef. = %s' % (t1, round(gini(selection),3)) + ', TTR = %s' % round(len(selection)/sum(selection),3) + ', α = %s' % str(round(powerlaw.Fit(selection).alpha,3)) + ', Η = %s' % str(round(ent(selection),3))
+    left_lin.title.text = '%s, Gini coef. = %s' % (t1, round(gini(selection),3)) + ', TTR = %s' % round(len(selection)/sum(selection),3) + ', α = %s' % str(round(powerlaw.Fit(selection).alpha,3)) + ', Η = %s' % str(round(ent(pd.Series(selection)),3))
     
     #left_lin.title.text = '%s, TTR = %s' % (t1, round(len(load_ticker(t1)[~load_ticker(t1)["word"].isin(ss[0:int(stopwords_1.value)])]["freq"].astype(float))/load_ticker(t1)[~load_ticker(t1)["word"].isin(ss[0:int(stopwords_1.value)])]["freq"].astype(float)).sum(),3) +\
     #', Gini = %s' % round(gini(load_ticker(t1)[~load_ticker(t1)["word"].isin(ss[0:int(stopwords_1.value)])]["freq"].astype(float)),3) +\
