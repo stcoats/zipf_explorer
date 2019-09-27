@@ -227,6 +227,9 @@ def update(selected=None):
     right_log.title.text_font_size = '7pt'
     right_lin.x_range = left_lin.x_range
     right_lin.y_range = left_lin.y_range
+    right_log.x_range = left_log.x_range
+    right_log.y_range = left_log.y_range
+
 
 ticker1.on_change('value', ticker1_change)
 ticker2.on_change('value', ticker2_change)
