@@ -105,7 +105,7 @@ def load_ticker(ticker):
 def get_data(t1, t2):
     df1 = load_ticker(t1)
     df2 = load_ticker(t2)
-    data = pd.merge(df1, df2, on='word',how='inner').fillna(0)
+    data = pd.merge(df1, df2, on='word',how='outer').fillna(0)
     data = data.dropna()
     #data = data["rel_x" > 0
     data["rel_diff"]=round(data["rel_x"]-data["rel_y"],3)
