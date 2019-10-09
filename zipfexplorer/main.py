@@ -111,29 +111,29 @@ def to_freq_list(text):
     return df
 def get_data(t1, t2):
     if ticker1.value == 'User_input':
-	csv = base64.b64decode(user1.value)
-	#text = textract.process(user1.value) #if user1.value.endswith(tuple(ext)) else base64.b64decode(user1.value) 
-	#enc = chardet.detect(text)
-	#print(text.decode(enc["encoding"]))
-	df1 = to_freq_list(csv.decode("utf-8"))
-	df1["rel"]=df1["freq"]*10000/df1["freq"].sum()
-	df1["rank"]=df1.index
+      csv = base64.b64decode(user1.value)
+      #text = textract.process(user1.value) #if user1.value.endswith(tuple(ext)) else base64.b64decode(user1.value) 
+      #enc = chardet.detect(text)
+      #print(text.decode(enc["encoding"]))
+      df1 = to_freq_list(csv.decode("utf-8"))
+      df1["rel"]=df1["freq"]*10000/df1["freq"].sum()
+      df1["rank"]=df1.index
     else:
-	df1name = join(dirname(__file__),'data', '%s.csv' % ticker1.value)
-	df1 = pd.read_csv(df1name,index_col=0)
-	df1["rel"]=df1["freq"]*10000/df1["freq"].sum()
-	df1["rank"]=df1.index
+      df1name = join(dirname(__file__),'data', '%s.csv' % ticker1.value)
+      df1 = pd.read_csv(df1name,index_col=0)
+      df1["rel"]=df1["freq"]*10000/df1["freq"].sum()
+      df1["rank"]=df1.index
     if ticker2.value == 'User_input':
-	csv = base64.b64decode(user2.value)
-	#df2 = pd.read_csv(BytesIO(csv))
-	df2 = to_freq_list(csv.decode("utf-8"))
-	df2["rel"]=df2["freq"]*10000/df2["freq"].sum()
-	df2["rank"]=df2.index
+      csv = base64.b64decode(user2.value)
+      #df2 = pd.read_csv(BytesIO(csv))
+      df2 = to_freq_list(csv.decode("utf-8"))
+      df2["rel"]=df2["freq"]*10000/df2["freq"].sum()
+      df2["rank"]=df2.index
     else:
-	df2name = join(dirname(__file__),'data', '%s.csv' % ticker2.value)
-	df2 = pd.read_csv(df2name,index_col=0)
-	df2["rel"]=df2["freq"]*10000/df2["freq"].sum()
-	df2["rank"]=df2.index
+      df2name = join(dirname(__file__),'data', '%s.csv' % ticker2.value)
+      df2 = pd.read_csv(df2name,index_col=0)
+      df2["rel"]=df2["freq"]*10000/df2["freq"].sum()
+      df2["rank"]=df2.index
     #print(len(df1),len(df2))
     data = pd.merge(df1, df2, on='word',how='inner').fillna(0)
     data = data.dropna()
