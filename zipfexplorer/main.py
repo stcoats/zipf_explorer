@@ -90,15 +90,15 @@ def simp(data):
     return simp
 
 #@lru_cache()
-def load_ticker(ticker):
-    fname = join(dirname(__file__),'data', '%s.csv' % ticker)
-    data = pd.read_csv(fname,index_col=0)
-    #data=data.drop('na', axis=1)
-    data["rel"]=data["freq"]*10000/data["freq"].sum()
-    data["rank"]=data.index
-    #data = data.set_index('date')
-    #return pd.DataFrame({ticker: data.c, ticker+'_returns': data.c.diff()})
-    return data
+#def load_ticker(ticker):
+#    fname = join(dirname(__file__),'data', '%s.csv' % ticker)
+#    data = pd.read_csv(fname,index_col=0)
+#    #data=data.drop('na', axis=1)
+#    data["rel"]=data["freq"]*10000/data["freq"].sum()
+#    data["rank"]=data.index
+#    #data = data.set_index('date')
+#    #return pd.DataFrame({ticker: data.c, ticker+'_returns': data.c.diff()})
+#    return data
 
 def to_freq_list(text):
     words = nltk.tokenize.word_tokenize(text)
