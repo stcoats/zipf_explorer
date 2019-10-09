@@ -296,7 +296,7 @@ def selection_change(attrname, old, new):
     #update_stats(data)
     table_source.data = table_source.from_df(data)
     if selected:
-	data = data.iloc[selected, :]
+      data = data.iloc[selected, :]
     
 stats = PreText(text="hi", width=300)
 #stats.on_change('value', stats)
