@@ -1,21 +1,19 @@
-
-
-
 from os.path import dirname, join
-
 import pandas as pd
 import powerlaw
 import scipy.stats
 from bokeh.io import curdoc
 from bokeh.layouts import row, column, gridplot, widgetbox,Spacer
-from bokeh.models.widgets import RadioButtonGroup, Slider, DataTable, TableColumn
+from bokeh.models.widgets import FileInput, Slider, DataTable, TableColumn
 from bokeh.models import ColumnDataSource, HoverTool, BoxSelectTool, CDSView, BooleanFilter,PanTool,WheelZoomTool,SaveTool,ResetTool,Label
 from bokeh.models.callbacks import CustomJS
 from bokeh.models.widgets import PreText, Select, Tabs, Panel, Paragraph
 from bokeh.plotting import figure
 import numpy as np
 from scipy.stats import chi2_contingency
-#from nltk.corpus import stopwords
+import nltk
+import regex
+from collections import OrderedDict
 
 stopw_file = join(dirname(__file__),'data', 'google_200words.txt')
 words=open(stopw_file).read()
@@ -57,7 +55,8 @@ DEFAULT_TICKERS= ['hemingway-farewell','twain-huckleberry',
  'Brown_romance',
  'Brown_science_fiction',
  'Brown_TOTAL',
- 'Frown_TOTAL']
+ 'Frown_TOTAL',
+ 'User_input']
 
 def nix(val, lst):
     return [x for x in lst if x != val]
@@ -101,10 +100,41 @@ def load_ticker(ticker):
     #return pd.DataFrame({ticker: data.c, ticker+'_returns': data.c.diff()})
     return data
 
-#@lru_cache()
+def to_freq_list(text):
+    words = nltk.tokenize.word_tokenize(text)
+    dist = nltk.FreqDist([x.lower() for x in words if regex.search("[\p{Letter}0-9]",x)])
+    vv=OrderedDict(sorted(dist.items(), key=lambda x:x[1]) )
+    vv1=OrderedDict(reversed(list(vv.items())))
+    df = pd.DataFrame(list(vv1.items()))
+    df.index += 1
+    df.columns = ['word','freq']
+    return df
 def get_data(t1, t2):
-    df1 = load_ticker(t1)
-    df2 = load_ticker(t2)
+    if ticker1.value == 'User_input':
+	csv = base64.b64decode(user1.value)
+	#text = textract.process(user1.value) #if user1.value.endswith(tuple(ext)) else base64.b64decode(user1.value) 
+	#enc = chardet.detect(text)
+	#print(text.decode(enc["encoding"]))
+	df1 = to_freq_list(csv.decode("utf-8"))
+	df1["rel"]=df1["freq"]*10000/df1["freq"].sum()
+	df1["rank"]=df1.index
+    else:
+	df1name = join(dirname(__file__),'data', '%s.csv' % ticker1.value)
+	df1 = pd.read_csv(df1name,index_col=0)
+	df1["rel"]=df1["freq"]*10000/df1["freq"].sum()
+	df1["rank"]=df1.index
+    if ticker2.value == 'User_input':
+	csv = base64.b64decode(user2.value)
+	#df2 = pd.read_csv(BytesIO(csv))
+	df2 = to_freq_list(csv.decode("utf-8"))
+	df2["rel"]=df2["freq"]*10000/df2["freq"].sum()
+	df2["rank"]=df2.index
+    else:
+	df2name = join(dirname(__file__),'data', '%s.csv' % ticker2.value)
+	df2 = pd.read_csv(df2name,index_col=0)
+	df2["rel"]=df2["freq"]*10000/df2["freq"].sum()
+	df2["rank"]=df2.index
+    #print(len(df1),len(df2))
     data = pd.merge(df1, df2, on='word',how='inner').fillna(0)
     data = data.dropna()
     #data = data["rel_x" > 0
@@ -117,21 +147,23 @@ def get_data(t1, t2):
     data.LL = round(data.LL,3)
     data.pval = round(data.pval,3)
     data = data[~data["word"].isin(ss[0:int(stopwords_1.value)])]
-    return data
-
+    return data,df1,df2
+    
 ticker1 = Select(value='twain-huckleberry', options=nix('hemingway-farewell', DEFAULT_TICKERS))
 ticker2 = Select(value='hemingway-farewell', options=nix('twain-huckleberry', DEFAULT_TICKERS))
+user1 = FileInput(accept='.csv,.txt,.doc,.docx')
+user2 = FileInput(accept='.csv,.txt,.doc,.docx')
 
 stopwords_1 = Select(title="Remove most frequent words:", value="0", options=["0","10", "20", "50", "100", "200"])
 
 source = ColumnDataSource(data=dict(word=[],rank_x=[],rank_y=[],freq_x=[],freq_y=[],
-				    sum_x=[],sum_y=[],rel_x=[],rel_y=[],rel_diff=[],LL=[],pval=[]))
+		    sum_x=[],sum_y=[],rel_x=[],rel_y=[],rel_diff=[],LL=[],pval=[]))
 
 custom_hover= HoverTool()
 
 custom_hover.tooltips = """
     <style>
-        .bk-tooltip>div:not(:first-child) {display:none;}
+	.bk-tooltip>div:not(:first-child) {display:none;}
     </style>
     <b>word: </b> @word <br>
     <b>rank: </b> @rank_x <br>
@@ -146,28 +178,28 @@ custom_hover.tooltips = """
 TOOLS = "pan,box_zoom,wheel_zoom,box_select,reset,hover"
 
 left_lin = figure(tools=TOOLS,x_axis_type='linear', y_axis_type='linear', plot_width=400, plot_height=400, sizing_mode='fixed',
-		   output_backend="webgl")
+	    output_backend="webgl")
 left_lin.circle('rank_x', 'rel_x', source=source,alpha=0.6, size=10,selection_color="red", hover_color="red")
 hoverL = left_lin.select(dict(type=HoverTool))
 hoverL.tooltips={"word": "@word","rank":"@rank_x","freq":"@freq_x","per_10k":"@rel_x","LL":"@LL","pval":"@pval"}
 panel_llin = Panel(child=left_lin, title='linear')
 
 left_log = figure(tools=TOOLS,x_axis_type='log', y_axis_type='log', plot_width=400, plot_height=400, sizing_mode='fixed',
-		   output_backend="webgl")
+	    output_backend="webgl")
 left_log.circle('rank_x', 'rel_x', source=source,alpha=0.6, size=10,selection_color="red", hover_color="red")
 hoverL = left_log.select(dict(type=HoverTool))
 hoverL.tooltips={"word": "@word","rank":"@rank_x","freq":"@freq_x","per_10k":"@rel_x","LL":"@LL","pval":"@pval"}
 panel_llog = Panel(child=left_log, title='log')
 
 right_lin = figure(tools=TOOLS,x_axis_type='linear',y_axis_type='linear', plot_width=400, plot_height=400, sizing_mode='fixed',
-		    output_backend="webgl")
+	    output_backend="webgl")
 right_lin.circle('rank_y', 'rel_y', source=source,alpha=0.6, size=10,selection_color="red", hover_color="red")
 hoverR = right_lin.select(dict(type=HoverTool))
 hoverR.tooltips={"word": "@word","rank":"@rank_y","freq":"@freq_y","per_10k":"@rel_y","LL":"@LL","pval":"@pval"}
 panel_rlin = Panel(child=right_lin, title='linear')
 
 right_log = figure(tools=TOOLS,x_axis_type='log',y_axis_type='log', plot_width=400, plot_height=400, sizing_mode='fixed',
-		    output_backend="webgl")
+	    output_backend="webgl")
 right_log.circle('rank_y', 'rel_y', source=source,alpha=0.6, size=10,selection_color="red", hover_color="red")
 hoverR = right_log.select(dict(type=HoverTool))
 hoverR.tooltips={"word": "@word","rank":"@rank_y","freq":"@freq_y","per_10k":"@rel_y","LL":"@LL","pval":"@pval"}
@@ -194,12 +226,12 @@ top10_l = DataTable(source=source, columns=columns_l,width=400, height=350)
 top10_r = DataTable(source=source, columns=columns_r,width=400, height=350)
 #data[['rank_x','rank_y','freq_x','freq_y']]
 
-p = gridplot(children=[[tabs_l,Spacer(width=100), tabs_r],[top10_l,Spacer(width=10),top10_r]],
-                        toolbar_location = "above",
-                        toolbar_options=dict(logo=None),
-			sizing_mode='fixed',
-			
-                        )
+p = gridplot(children=[[tabs_l,Spacer(width=10), tabs_r],[top10_l,Spacer(width=10),top10_r]],
+			toolbar_location = "above",
+			toolbar_options=dict(logo=None),
+	    #sizing_mode='fixed',
+
+			)
 
 # set up callbacks
 
@@ -210,19 +242,36 @@ def ticker1_change(attrname, old, new):
 def ticker2_change(attrname, old, new):
     ticker1.options = nix(new, DEFAULT_TICKERS)
     update()
+    
+def user1_change(attrname, old, new):
+    ticker1.value = "User_input"
+    ticker2.options = nix(new, DEFAULT_TICKERS)
+    update()
+
+def user2_change(attrname, old, new):
+    ticker2.value = "User_input"
+    ticker1.options = nix(new, DEFAULT_TICKERS)
+    update()
+dict1 = {
+'x':[0]*6,
+'y':[1,1,1,2,2,2]
+	    }
+
+table_source = ColumnDataSource(data=dict1)
 
 def update(selected=None):
     t1, t2 = ticker1.value, ticker2.value
     data = get_data(t1, t2)
-    source.data = source.from_df(data[['word','rank_x','rank_y','freq_x','freq_y','sum_x','sum_y','rel_x','rel_y','rel_diff','LL','pval']])
+    update_stats(data, data[1], data[2])
+    source.data = source.from_df(data[0])
     #selection_1 = np.array(load_ticker(t1)[~load_ticker(t1)["word"].isin(ss[0:int(stopwords_1.value)])]["freq"].astype(float))
-    selection_1 = np.array(data[~data["word"].isin(ss[0:int(stopwords_1.value)])]["freq_x"].astype(float))
+    selection_1 = np.array(data[0][~data[0]["word"].isin(ss[0:int(stopwords_1.value)])]["freq_x"].astype(float))
     #selection_2 = np.array(load_ticker(t2)[~load_ticker(t2)["word"].isin(ss[0:int(stopwords_1.value)])]["freq"].astype(float))
-    selection_2 = np.array(data[~data["word"].isin(ss[0:int(stopwords_1.value)])]["freq_y"].astype(float))
-    left_lin.title.text = '%s, Gini = %s' % (t1, round(gini(selection_1),3)) + ', TTR = %s' % round(len(selection_1)/sum(selection_1),3) + ', α = %s' % str(round(powerlaw.Fit(selection_1).alpha,3)) + ', Η′ = %s' % str(round(ent(pd.Series(selection_1)),3))
-    left_log.title.text = '%s, Gini = %s' % (t1, round(gini(selection_1),3)) + ', TTR = %s' % round(len(selection_1)/sum(selection_1),3) + ', α = %s' % str(round(powerlaw.Fit(selection_1).alpha,3)) + ', Η′ = %s' % str(round(ent(pd.Series(selection_1)),3))
-    right_lin.title.text = '%s, Gini = %s' % (t2, round(gini(selection_2),3)) + ', TTR = %s' % round(len(selection_2)/sum(selection_2),3) + ', α = %s' % str(round(powerlaw.Fit(selection_2).alpha,3)) + ', Η′ = %s' % str(round(ent(pd.Series(selection_2)),3))
-    right_log.title.text = '%s, Gini = %s' % (t2, round(gini(selection_2),3)) + ', TTR = %s' % round(len(selection_2)/sum(selection_2),3) + ', α = %s' % str(round(powerlaw.Fit(selection_2).alpha,3)) + ', Η′ = %s' % str(round(ent(pd.Series(selection_2)),3))
+    selection_2 = np.array(data[0][~data[0]["word"].isin(ss[0:int(stopwords_1.value)])]["freq_y"].astype(float))
+    left_lin.title.text = '%s, Gini = %s' % (t1, round(gini(selection_1),3)) + ', TTR = %s' % round(len(selection_1)/sum(selection_1),3) + ', a = %s' % str(round(powerlaw.Fit(selection_1).alpha,3)) + ', a = %s' % str(round(ent(pd.Series(selection_1)),3))
+    left_log.title.text = '%s, Gini = %s' % (t1, round(gini(selection_1),3)) + ', TTR = %s' % round(len(selection_1)/sum(selection_1),3) + ', a = %s' % str(round(powerlaw.Fit(selection_1).alpha,3)) + ', a = %s' % str(round(ent(pd.Series(selection_1)),3))
+    right_lin.title.text = '%s, Gini = %s' % (t2, round(gini(selection_2),3)) + ', TTR = %s' % round(len(selection_2)/sum(selection_2),3) + ', a = %s' % str(round(powerlaw.Fit(selection_2).alpha,3)) + ', a = %s' % str(round(ent(pd.Series(selection_2)),3))
+    right_log.title.text = '%s, Gini = %s' % (t2, round(gini(selection_2),3)) + ', TTR = %s' % round(len(selection_2)/sum(selection_2),3) + ', a = %s' % str(round(powerlaw.Fit(selection_2).alpha,3)) + ', a = %s' % str(round(ent(pd.Series(selection_2)),3))
     left_lin.title.text_font_size = '7pt'
     left_log.title.text_font_size = '7pt'
     right_lin.title.text_font_size = '7pt'
@@ -231,25 +280,41 @@ def update(selected=None):
     right_lin.y_range = left_lin.y_range
     right_log.x_range = left_log.x_range
     right_log.y_range = left_log.y_range
+    # table_source.data = table_source.from_df(df)
 
 
 ticker1.on_change('value', ticker1_change)
 ticker2.on_change('value', ticker2_change)
+user1.on_change('value',user1_change)
+user2.on_change('value',user2_change)
 
 def selection_change(attrname, old, new):
     t1, t2 = ticker1.value, ticker2.value
     data = get_data(t1, t2)
+    
     selected = source.selected['1d']['indices']
+    #update_stats(data)
+    table_source.data = table_source.from_df(data)
     if selected:
-        data = data.iloc[selected, :]
+	data = data.iloc[selected, :]
+    
+stats = PreText(text="hi", width=300)
+#stats.on_change('value', stats)
 
+def update_stats(data,df1,df2):
+    stats.text = str("t1: {} types, {} tokens\nt2: {} types, {} tokens\n{}% of t1 types in t2\n{}% of t2 types in t1".
+		      format(len(df1), df1["freq"].sum(),
+			  len(df2),df2["freq"].sum(),
+			  round((len(pd.merge(df1,df2,on="word",how='inner'))/len(df1)*100),2),
+			round((len(pd.merge(df1,df2,on="word",how='inner'))/len(df2))*100,2)))
+    #str(round(df1[['word','freq']].describe(),2))
 stopwords_1.on_change('value', lambda attr, old, new: update())
 
 source.on_change('selected', selection_change)
 
 MODE = 'fixed'
 
-widgets = widgetbox(ticker1, ticker2, stopwords_1, width=150)
+widgets = widgetbox(ticker1, user1, ticker2, user2, stopwords_1, stats, width=150)
 main_row = row(p,widgets)
 sec_row = row(top10_r,Spacer(width=40),top10_r)
 layout = column(main_row)
