@@ -14,6 +14,8 @@ from scipy.stats import chi2_contingency
 import nltk
 import regex
 from collections import OrderedDict
+from io import StringIO, BytesIO
+import base64
 
 stopw_file = join(dirname(__file__),'data', 'google_200words.txt')
 words=open(stopw_file).read()
@@ -268,10 +270,10 @@ def update(selected=None):
     selection_1 = np.array(data[0][~data[0]["word"].isin(ss[0:int(stopwords_1.value)])]["freq_x"].astype(float))
     #selection_2 = np.array(load_ticker(t2)[~load_ticker(t2)["word"].isin(ss[0:int(stopwords_1.value)])]["freq"].astype(float))
     selection_2 = np.array(data[0][~data[0]["word"].isin(ss[0:int(stopwords_1.value)])]["freq_y"].astype(float))
-    left_lin.title.text = '%s, Gini = %s' % (t1, round(gini(selection_1),3)) + ', TTR = %s' % round(len(selection_1)/sum(selection_1),3) + ', a = %s' % str(round(powerlaw.Fit(selection_1).alpha,3)) + ', a = %s' % str(round(ent(pd.Series(selection_1)),3))
-    left_log.title.text = '%s, Gini = %s' % (t1, round(gini(selection_1),3)) + ', TTR = %s' % round(len(selection_1)/sum(selection_1),3) + ', a = %s' % str(round(powerlaw.Fit(selection_1).alpha,3)) + ', a = %s' % str(round(ent(pd.Series(selection_1)),3))
-    right_lin.title.text = '%s, Gini = %s' % (t2, round(gini(selection_2),3)) + ', TTR = %s' % round(len(selection_2)/sum(selection_2),3) + ', a = %s' % str(round(powerlaw.Fit(selection_2).alpha,3)) + ', a = %s' % str(round(ent(pd.Series(selection_2)),3))
-    right_log.title.text = '%s, Gini = %s' % (t2, round(gini(selection_2),3)) + ', TTR = %s' % round(len(selection_2)/sum(selection_2),3) + ', a = %s' % str(round(powerlaw.Fit(selection_2).alpha,3)) + ', a = %s' % str(round(ent(pd.Series(selection_2)),3))
+    left_lin.title.text = '%s, Gini = %s' % (t1, round(gini(selection_1),3)) + ', TTR = %s' % round(len(selection_1)/sum(selection_1),3) + ', ⍺ = %s' % str(round(powerlaw.Fit(selection_1).alpha,3)) + ', H′ = %s' % str(round(ent(pd.Series(selection_1)),3))
+    left_log.title.text = '%s, Gini = %s' % (t1, round(gini(selection_1),3)) + ', TTR = %s' % round(len(selection_1)/sum(selection_1),3) + ', ⍺ = %s' % str(round(powerlaw.Fit(selection_1).alpha,3)) + ', H′ = %s' % str(round(ent(pd.Series(selection_1)),3))
+    right_lin.title.text = '%s, Gini = %s' % (t2, round(gini(selection_2),3)) + ', TTR = %s' % round(len(selection_2)/sum(selection_2),3) + ', ⍺ = %s' % str(round(powerlaw.Fit(selection_2).alpha,3)) + ', H′ = %s' % str(round(ent(pd.Series(selection_2)),3))
+    right_log.title.text = '%s, Gini = %s' % (t2, round(gini(selection_2),3)) + ', TTR = %s' % round(len(selection_2)/sum(selection_2),3) + ', ⍺ = %s' % str(round(powerlaw.Fit(selection_2).alpha,3)) + ', H′ = %s' % str(round(ent(pd.Series(selection_2)),3))
     left_lin.title.text_font_size = '7pt'
     left_log.title.text_font_size = '7pt'
     right_lin.title.text_font_size = '7pt'
