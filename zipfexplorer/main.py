@@ -241,11 +241,11 @@ p = gridplot(children=[[tabs_l,Spacer(width=10), tabs_r],[top10_l,Spacer(width=1
 # set up callbacks
 
 def ticker1_change(attrname, old, new):
-    ticker2.options = nix(new, DEFAULT_TICKERS)
+    #ticker2.options = nix(new, DEFAULT_TICKERS)
     update()
 
 def ticker2_change(attrname, old, new):
-    ticker1.options = nix(new, DEFAULT_TICKERS)
+    #ticker1.options = nix(new, DEFAULT_TICKERS)
     update()
     
 def user1_change(attrname, old, new):
