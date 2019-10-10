@@ -11,7 +11,8 @@ from bokeh.models.widgets import PreText, Select, Tabs, Panel, Paragraph
 from bokeh.plotting import figure
 import numpy as np
 from scipy.stats import chi2_contingency
-import nltk
+from nltk.tokenize import word_tokenize
+from nltk import FreqDist
 import regex
 from collections import OrderedDict
 from io import StringIO, BytesIO
@@ -103,8 +104,8 @@ def simp(data):
 #    return data
 
 def to_freq_list(text):
-    words = nltk.tokenize.word_tokenize(text)
-    dist = nltk.FreqDist([x.lower() for x in words if regex.search("[\p{Letter}0-9]",x)])
+    words = word_tokenize(text)
+    dist = FreqDist([x.lower() for x in words if regex.search("[\p{Letter}0-9]",x)])
     vv=OrderedDict(sorted(dist.items(), key=lambda x:x[1]) )
     vv1=OrderedDict(reversed(list(vv.items())))
     df = pd.DataFrame(list(vv1.items()))
