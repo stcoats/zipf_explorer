@@ -13,11 +13,13 @@ import numpy as np
 from scipy.stats import chi2_contingency
 from nltk.tokenize import word_tokenize
 from nltk import FreqDist
+import nltk
 import regex
 from collections import OrderedDict
 from io import StringIO, BytesIO
 import base64
 
+nltk.download('punkt')
 stopw_file = join(dirname(__file__),'data', 'google_200words.txt')
 words=open(stopw_file).read()
 ss=words.split()
