@@ -250,12 +250,12 @@ def ticker2_change(attrname, old, new):
     
 def user1_change(attrname, old, new):
     ticker1.value = "User_input"
-    ticker2.options = nix(new, DEFAULT_TICKERS)
+    #ticker2.options = nix(new, DEFAULT_TICKERS)
     update()
 
 def user2_change(attrname, old, new):
     ticker2.value = "User_input"
-    ticker1.options = nix(new, DEFAULT_TICKERS)
+    #ticker1.options = nix(new, DEFAULT_TICKERS)
     update()
 dict1 = {
 'x':[0]*6,
