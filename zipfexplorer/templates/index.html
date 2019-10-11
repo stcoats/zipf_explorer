@@ -24,7 +24,8 @@
     <H1><b>ZipfExplorer</b></H1>
     <p>This tool lets you compare the frequencies of shared word types in different 
     texts or corpora.</p>
-    <p>Select texts or corpora to explore with the drop-down menus. The plot x-axes 
+    <p>Select texts or corpora to explore with the drop-down menus, or use the buttons
+    to upload your own files (in .txt format). The plot x-axes 
     show word frequency ranks, while the y-axes show the relative frequency per 10k words.
     The circles represent individual word types. Hovering over a word shows its rank, 
     frequency, relative frequency (per 10k words), a log-likelihood 
@@ -56,7 +57,9 @@
     and its subsections, and the 
     <a href="http://clu.uni.no/icame/manuals/FROWN/INDEX.HTM" target="_blank">Freiburg-Brown 
     Corpus of American English</a>, available via Clarin-NO's <a href="http://clarino.uib.no/korpuskel/page" target="_blank">Corpuscle</a> 
-    tool.</p>  
+    tool.</p>
+    <p>The Heroku server shuts off if there has been no user input for a certain time - refresh
+    the page to re-start the app in this case.</p>
     {{ plot_div|indent(8) }}
     {{ plot_script|indent(8) }}
     <p>Tool created by <a href="http://cc.oulu.fi/~scoats" target="_blank">Steven Coats</a></p> 
