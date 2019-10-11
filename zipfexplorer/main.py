@@ -275,10 +275,10 @@ def update(selected=None):
     selection_1 = np.array(data[0][~data[0]["word"].isin(ss[0:int(stopwords_1.value)])]["freq_x"].astype(float))
     #selection_2 = np.array(load_ticker(t2)[~load_ticker(t2)["word"].isin(ss[0:int(stopwords_1.value)])]["freq"].astype(float))
     selection_2 = np.array(data[0][~data[0]["word"].isin(ss[0:int(stopwords_1.value)])]["freq_y"].astype(float))
-    left_lin.title.text = '%s, Gini = %s' % (t1, round(gini(selection_1),3)) + ', TTR = %s' % round(len(selection_1)/sum(selection_1),3) + ', ⍺ = %s' % str(round(powerlaw.Fit(selection_1).alpha,3)) + ', 𝑯 = %s' % str(round(ent(pd.Series(selection_1)),3))
-    left_log.title.text = '%s, Gini = %s' % (t1, round(gini(selection_1),3)) + ', TTR = %s' % round(len(selection_1)/sum(selection_1),3) + ', ⍺ = %s' % str(round(powerlaw.Fit(selection_1).alpha,3)) + ', 𝑯 = %s' % str(round(ent(pd.Series(selection_1)),3))
-    right_lin.title.text = '%s, Gini = %s' % (t2, round(gini(selection_2),3)) + ', TTR = %s' % round(len(selection_2)/sum(selection_2),3) + ', ⍺ = %s' % str(round(powerlaw.Fit(selection_2).alpha,3)) + ', 𝑯 = %s' % str(round(ent(pd.Series(selection_2)),3))
-    right_log.title.text = '%s, Gini = %s' % (t2, round(gini(selection_2),3)) + ', TTR = %s' % round(len(selection_2)/sum(selection_2),3) + ', ⍺ = %s' % str(round(powerlaw.Fit(selection_2).alpha,3)) + ', 𝑯 = %s' % str(round(ent(pd.Series(selection_2)),3))
+    left_lin.title.text = '%s, TTR = %s' % (t1, round(len(selection_1)/sum(selection_1),3)) + ', Gini = %s' % round(gini(selection_1),3) + ', ⍺ = %s' % str(round(powerlaw.Fit(selection_1).alpha,3)) + ', 𝑯 = %s' % str(round(ent(pd.Series(selection_1)),3))
+    left_log.title.text = '%s, TTR = %s' % (t1, round(len(selection_1)/sum(selection_1),3)) + ', Gini = %s' % round(gini(selection_1),3) + ', ⍺ = %s' % str(round(powerlaw.Fit(selection_1).alpha,3)) + ', 𝑯 = %s' % str(round(ent(pd.Series(selection_1)),3))
+    right_lin.title.text = '%s, TTR = %s' % (t2, round(len(selection_2)/sum(selection_2),3)) + ', Gini = %s' % round(gini(selection_2),3) + ', ⍺ = %s' % str(round(powerlaw.Fit(selection_2).alpha,3)) + ', 𝑯 = %s' % str(round(ent(pd.Series(selection_2)),3))
+    right_log.title.text = '%s, TTR = %s' % (t2, round(len(selection_2)/sum(selection_2),3)) + ', Gini = %s' % round(gini(selection_2),3) + ', ⍺ = %s' % str(round(powerlaw.Fit(selection_2).alpha,3)) + ', 𝑯 = %s' % str(round(ent(pd.Series(selection_2)),3))
     left_lin.title.text_font_size = '7pt'
     left_log.title.text_font_size = '7pt'
     right_lin.title.text_font_size = '7pt'
@@ -309,12 +309,16 @@ stats = PreText(text="hi", width=300)
 #stats.on_change('value', stats)
 
 def update_stats(data,df1,df2):
+    shared_types = data[0][~data[0]["word"].isin(ss[0:int(stopwords_1.value)])]
+    t1_types = data[1][~data[1]["word"].isin(ss[0:int(stopwords_1.value)])]
+    t2_types = data[2][~data[2]["word"].isin(ss[0:int(stopwords_1.value)])]
     stats.text = str("t1: {} types, {} tokens\nt2: {} types, {} tokens\n{}% of t1 types in t2\n{}% of t2 types in t1".
-		      format(len(df1), df1["freq"].sum(),
-			  len(df2),df2["freq"].sum(),
-			  round((len(pd.merge(df1,df2,on="word",how='inner'))/len(df1)*100),2),
-			round((len(pd.merge(df1,df2,on="word",how='inner'))/len(df2))*100,2)))
-    #str(round(df1[['word','freq']].describe(),2))
+		     format(len(t1_types),
+			    t1_types["freq"].sum(),
+			    len(t2_types),
+			    t2_types["freq"].sum(),
+			  round((len(shared_types)/len(t1_types)*100),2),
+			round((len(shared_types)/len(t2_types)*100),2)))
 stopwords_1.on_change('value', lambda attr, old, new: update())
 
 source.on_change('selected', selection_change)
