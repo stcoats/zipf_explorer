@@ -25,26 +25,26 @@ stopw_file = join(dirname(__file__),'data', 'google_200words.txt')
 words=open(stopw_file).read()
 ss=words.split()
 
-DEFAULT_TICKERS= ['Brown_TOTAL', 'Brown_adventure', 'Brown_belles_lettres',
-		  'Brown_editorial', 'Brown_fiction', 'Brown_government',
-		  'Brown_hobbies', 'Brown_humor', 'Brown_learned', 'Brown_lore',
-		  'Brown_mystery', 'Brown_news', 'Brown_religion', 'Brown_reviews',
-		  'Brown_romance', 'Brown_science_fiction', 'FROWN_TOTAL', 'Frown_TOTAL',
-		  'aesop-fables', 'hamilton_jay_madison-federalist',
-		  'anonymous-book_of_mormon', 'conan_doyle-return_of_sherlock',
-		  'austen-emma', 'austen-persuasion', 'austen-sense', 'bible-kjv',
-		  'blake-poems', 'bryant-stories', 'burgess-busterbrown', 'carroll-alice',
-		  'dickens-christmas_carol', 'chesterton-ball', 'chesterton-brown',
-		  'chesterton-thursday', 'edgeworth-parents', 'wells-war_of_the_worlds',
-		  'stowe-uncle_toms_cabin', 'hemingway-farewell', 'james-the_american',
-		  'james-the_europeans', 'inaugural_addresses',
-		  'london-call_of_the_wild', 'marx_engels-communist_manifesto',
-		  'carroll-alice', 'carroll-lookingglass', 'twain-tom_sawyer',
-		  'shelley-frankenstein', 'melville-moby_dick', 'milton-paradise',
-		  'wilde-dorian_gray', 'plato-republic', 'shakespeare-caesar',
-		  'shakespeare-hamlet', 'shakespeare-macbeth', 'sophocles-oedipus',
-		  'hardy-return_of_the_native', 'twain-huckleberry',
-		  'sinclair-the_jungle', 'whitman-leaves', 'User_input']
+DEFAULT_TICKERS=  ['Brown_TOTAL', 'Brown_adventure', 'Brown_belles_lettres',
+		   'Brown_editorial', 'Brown_fiction', 'Brown_government',
+		   'Brown_hobbies', 'Brown_humor', 'Brown_learned', 'Brown_lore',
+		   'Brown_mystery', 'Brown_news', 'Brown_religion', 'Brown_reviews',
+		   'Brown_romance', 'Brown_science_fiction', 'FROWN_TOTAL', 'Frown_TOTAL',
+		   'aesop-fables', 'anonymous-book_mormon', 'austen-emma',
+		   'austen-persuasion', 'austen-sense', 'bible-kjv', 'blake-poems',
+		   'bryant-stories', 'burgess-busterbrown', 'carroll-alice',
+		   'chesterton-ball', 'chesterton-brown', 'chesterton-thursday',
+		   'conan_doyle-return_sherlock', 'dickens-christmas_carol', 
+		   'edgeworth-parents', 'hamilton_jay_madison-fed',
+		   'hardy-return_of_the_native', 'hemingway-farewell', 'inaugural',
+		   'inaugural_addresses', 'james-the_american', 'james-the_europeans',
+		   'london-call_of_the_wild', 'marx_engels-communist',
+		   'melville-moby_dick', 'milton-paradise', 'plato-republic',
+		   'shakespeare-caesar', 'shakespeare-hamlet', 'shakespeare-macbeth',
+		   'shelley-frankenstein', 'sinclair-the_jungle', 'sophocles-oedipus',
+		   'stowe-uncle_toms_cabin', 'twain-huckleberry', 'twain-tom_sawyer',
+		   'wells-war_of_the_worlds', 'whitman-leaves', 'wilde-dorian_gray',
+		   'User_input']
 
 def nix(val, lst):
     return [x for x in lst if x != val]
