@@ -119,7 +119,7 @@ def get_data(t1, t2):
     if ticker1.value == 'User_input':
       csv = base64.b64decode(user1.value)
       #text = textract.process(user1.value) #if user1.value.endswith(tuple(ext)) else base64.b64decode(user1.value) 
-      enc = chardet.detect(text)
+      enc = chardet.detect(csv)
       #print(text.decode(enc["encoding"]))
       df1 = to_freq_list(csv.decode(enc["encoding"],"ignore"))
       df1["rel"]=df1["freq"]*10000/df1["freq"].sum()
@@ -132,6 +132,7 @@ def get_data(t1, t2):
     if ticker2.value == 'User_input':
       csv = base64.b64decode(user2.value)
       #df2 = pd.read_csv(BytesIO(csv))
+      enc = chardet.detect(csv)
       df2 = to_freq_list(csv.decode(enc["encoding"],"ignore"))
       df2["rel"]=df2["freq"]*10000/df2["freq"].sum()
       df2["rank"]=df2.index
