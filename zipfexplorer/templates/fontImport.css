@@ -11,4 +11,11 @@ h1, h2, h3 {
   font-family: 'Crimson Text';
   font-weight: normal;
 }
+
+p {font-size: 14px}
+
+a, a > code {
+  color: rgb(249, 38, 114);
+  text-decoration: none;
+  
 .remark-code, .remark-inline-code { font-family: 'Source Code Pro', 'Lucida Console', Monaco, monospace; }
