@@ -138,8 +138,10 @@ def get_data(t1, t2):
     data = data[~data["word"].isin(ss[0:int(stopwords_1.value)])]
     return data,df1,df2
     
-ticker1 = Select(value='twain-huckleberry', options=nix('hemingway-farewell', DEFAULT_TICKERS))
-ticker2 = Select(value='hemingway-farewell', options=nix('twain-huckleberry', DEFAULT_TICKERS))
+#ticker1 = Select(value='twain-huckleberry', options=nix('hemingway-farewell', DEFAULT_TICKERS))
+#ticker2 = Select(value='hemingway-farewell', options=nix('twain-huckleberry', DEFAULT_TICKERS))
+ticker1 = Select(value='twain-huckleberry', options=DEFAULT_TICKERS)
+ticker2 = Select(value='hemingway-farewell', options=DEFAULT_TICKERS)
 user1 = FileInput(accept='.csv,.txt,.doc,.docx')
 user2 = FileInput(accept='.csv,.txt,.doc,.docx')
 
