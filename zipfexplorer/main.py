@@ -21,7 +21,7 @@ from io import StringIO, BytesIO
 import base64
 
 nltk.download('punkt')
-stopw_file = join(dirname(__file__),'data', 'google_200words.txt')
+stopw_file = join(dirname(__file__),'data', 'BNC_200words.txt')
 words=open(stopw_file).read()
 ss=words.split()
 
