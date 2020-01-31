@@ -4,7 +4,7 @@ import powerlaw
 import scipy.stats
 from bokeh.io import curdoc
 from bokeh.layouts import row, column, gridplot, widgetbox,Spacer
-from bokeh.models.widgets import FileInput, Slider, DataTable, TableColumn
+from bokeh.models.widgets import FileInput, Slider, DataTable, TableColumn, NumberFormatter
 from bokeh.models import ColumnDataSource, HoverTool, BoxSelectTool, CDSView, BooleanFilter,PanTool,WheelZoomTool,SaveTool,ResetTool,Label
 from bokeh.models.callbacks import CustomJS
 from bokeh.models.widgets import PreText, Select, Tabs, Panel, Paragraph
@@ -168,53 +168,64 @@ custom_hover.tooltips = """
 
 TOOLS = "pan,box_zoom,wheel_zoom,box_select,reset,hover"
 
-left_lin = figure(tools=TOOLS,x_axis_type='linear', y_axis_type='linear', plot_width=400, plot_height=400, sizing_mode='fixed',
+left_lin = figure(tools=TOOLS,x_axis_type='linear', y_axis_type='linear', plot_width=500, plot_height=500, sizing_mode='fixed',
 	    output_backend="webgl")
 left_lin.circle('rank_x', 'rel_x', source=source,alpha=0.6, size=10,selection_color="red", hover_color="red")
+left_lin.yaxis.axis_label = "Frequency (per 10k words)"
+left_lin.xaxis.axis_label = "Rank"
 hoverL = left_lin.select(dict(type=HoverTool))
 hoverL.tooltips={"word": "@word","rank":"@rank_x","freq":"@freq_x","per_10k":"@rel_x","LL":"@LL","pval":"@pval"}
 panel_llin = Panel(child=left_lin, title='linear')
 
-left_log = figure(tools=TOOLS,x_axis_type='log', y_axis_type='log', plot_width=400, plot_height=400, sizing_mode='fixed',
+left_log = figure(tools=TOOLS,x_axis_type='log', y_axis_type='log', plot_width=500, plot_height=500, sizing_mode='fixed',
 	    output_backend="webgl")
 left_log.circle('rank_x', 'rel_x', source=source,alpha=0.6, size=10,selection_color="red", hover_color="red")
+left_log.yaxis.axis_label = "Frequency (per 10k words)"
+left_log.xaxis.axis_label = "Rank"
 hoverL = left_log.select(dict(type=HoverTool))
 hoverL.tooltips={"word": "@word","rank":"@rank_x","freq":"@freq_x","per_10k":"@rel_x","LL":"@LL","pval":"@pval"}
 panel_llog = Panel(child=left_log, title='log')
 
-right_lin = figure(tools=TOOLS,x_axis_type='linear',y_axis_type='linear', plot_width=400, plot_height=400, sizing_mode='fixed',
+right_lin = figure(tools=TOOLS,x_axis_type='linear',y_axis_type='linear', plot_width=500, plot_height=500, sizing_mode='fixed',
 	    output_backend="webgl")
 right_lin.circle('rank_y', 'rel_y', source=source,alpha=0.6, size=10,selection_color="red", hover_color="red")
+right_lin.yaxis.axis_label = "Frequency (per 10k words)"
+right_lin.xaxis.axis_label = "Rank"
 hoverR = right_lin.select(dict(type=HoverTool))
 hoverR.tooltips={"word": "@word","rank":"@rank_y","freq":"@freq_y","per_10k":"@rel_y","LL":"@LL","pval":"@pval"}
 panel_rlin = Panel(child=right_lin, title='linear')
 
-right_log = figure(tools=TOOLS,x_axis_type='log',y_axis_type='log', plot_width=400, plot_height=400, sizing_mode='fixed',
+right_log = figure(tools=TOOLS,x_axis_type='log',y_axis_type='log', plot_width=500, plot_height=500, sizing_mode='fixed',
 	    output_backend="webgl")
 right_log.circle('rank_y', 'rel_y', source=source,alpha=0.6, size=10,selection_color="red", hover_color="red")
+right_log.yaxis.axis_label = "Frequency (per 10k words)"
+right_log.xaxis.axis_label = "Rank"
 hoverR = right_log.select(dict(type=HoverTool))
 hoverR.tooltips={"word": "@word","rank":"@rank_y","freq":"@freq_y","per_10k":"@rel_y","LL":"@LL","pval":"@pval"}
 panel_rlog = Panel(child=right_log, title='log')
 
 tabs_l = Tabs(tabs=[panel_llin,panel_llog])
 tabs_r = Tabs(tabs=[panel_rlin,panel_rlog])
+formater =  NumberFormatter(format='0.00')
 
 columns_l = [
     TableColumn(field="rank_x", title="rank"),
-    TableColumn(field="freq_x", title="freq"),
     TableColumn(field="word", title="word"),
-    TableColumn(field="rel_diff", title="rel_diff"),
-    TableColumn(field="LL", title="Log-likelihood")
+    TableColumn(field="freq_x", title="freq"),
+    TableColumn(field="rel_x", title="rel_freq",formatter=formater),
+    TableColumn(field="rel_diff_x", title="rel_diff",formatter=formater),
+    TableColumn(field="LL", title="Log-likelihood",formatter=formater)
 ]
 columns_r = [
     TableColumn(field="rank_y", title="rank"),
-    TableColumn(field="freq_y", title="freq"),
     TableColumn(field="word", title="word"),
-    TableColumn(field="rel_diff", title="rel_diff"),
-    TableColumn(field="LL", title="Log-likelihood")
+    TableColumn(field="freq_y", title="freq"),
+    TableColumn(field="rel_y", title="rel_freq",formatter=formater),
+    TableColumn(field="rel_diff_y", title="rel_diff",formatter=formater),
+    TableColumn(field="LL", title="Log-likelihood",formatter=formater)
 ]
-top10_l = DataTable(source=source, columns=columns_l,width=400, height=350)
-top10_r = DataTable(source=source, columns=columns_r,width=400, height=350)
+top10_l = DataTable(source=source, columns=columns_l,width=500, height=350)
+top10_r = DataTable(source=source, columns=columns_r,width=500, height=350)
 #data[['rank_x','rank_y','freq_x','freq_y']]
 
 p = gridplot(children=[[tabs_l,Spacer(width=10), tabs_r],[top10_l,Spacer(width=10),top10_r]],
