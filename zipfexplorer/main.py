@@ -127,7 +127,9 @@ def get_data(t1, t2):
     data = pd.merge(df1, df2, on='word',how='inner').fillna(0)
     data = data.dropna()
     #data = data["rel_x" > 0
-    data["rel_diff"]=round(data["rel_x"]-data["rel_y"],3)
+    #data["rel_diff"]=round(data["rel_x"]-data["rel_y"],3)
+    data["rel_diff_x"]=data["rel_x"]-data["rel_y"]
+    data["rel_diff_y"]=data["rel_y"]-data["rel_x"]
     data["sum_x"]=data["freq_x"].sum()
     data["sum_y"]=data["freq_y"].sum()
     data=pd.concat([data,pd.DataFrame(data.apply(chisq,axis=1))],axis=1)
