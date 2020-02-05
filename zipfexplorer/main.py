@@ -272,10 +272,10 @@ def update(selected=None):
     selection_1 = np.array(data[0][~data[0]["word"].isin(ss[0:int(stopwords_1.value)])]["freq_x"].astype(float))
     #selection_2 = np.array(load_ticker(t2)[~load_ticker(t2)["word"].isin(ss[0:int(stopwords_1.value)])]["freq"].astype(float))
     selection_2 = np.array(data[0][~data[0]["word"].isin(ss[0:int(stopwords_1.value)])]["freq_y"].astype(float))
-    left_lin.title.text = '%s, TTR = %s' % (t1, round(len(selection_1)/sum(selection_1),2)) + ', Gini = %s' % round(gini(selection_1),2) + ', ⍺ = %s' % str(round(powerlaw.Fit(selection_1).alpha,2)) + ', 𝑯 = %s' % str(round(ent(pd.Series(selection_1)),2))
-    left_log.title.text = '%s, TTR = %s' % (t1, round(len(selection_1)/sum(selection_1),2)) + ', Gini = %s' % round(gini(selection_1),2) + ', ⍺ = %s' % str(round(powerlaw.Fit(selection_1).alpha,2)) + ', 𝑯 = %s' % str(round(ent(pd.Series(selection_1)),2))
-    right_lin.title.text = '%s, TTR = %s' % (t2, round(len(selection_2)/sum(selection_2),2)) + ', Gini = %s' % round(gini(selection_2),2) + ', ⍺ = %s' % str(round(powerlaw.Fit(selection_2).alpha,2)) + ', 𝑯 = %s' % str(round(ent(pd.Series(selection_2)),2))
-    right_log.title.text = '%s, TTR = %s' % (t2, round(len(selection_2)/sum(selection_2),2)) + ', Gini = %s' % round(gini(selection_2),2) + ', ⍺ = %s' % str(round(powerlaw.Fit(selection_2).alpha,2)) + ', 𝑯 = %s' % str(round(ent(pd.Series(selection_2)),2))
+    left_lin.title.text = '%s, TTR = %s' % (t1, round(len(selection_1)/sum(selection_1),2)) + ', Gini = %s' % round(gini(selection_1),2) + ', ⍺ = %s' % str(round(powerlaw.Fit(selection_1, discrete=True).alpha,2)) + ', 𝑯 = %s' % str(round(ent(pd.Series(selection_1)),2))
+    left_log.title.text = '%s, TTR = %s' % (t1, round(len(selection_1)/sum(selection_1),2)) + ', Gini = %s' % round(gini(selection_1),2) + ', ⍺ = %s' % str(round(powerlaw.Fit(selection_1, discrete=True).alpha,2)) + ', 𝑯 = %s' % str(round(ent(pd.Series(selection_1)),2))
+    right_lin.title.text = '%s, TTR = %s' % (t2, round(len(selection_2)/sum(selection_2),2)) + ', Gini = %s' % round(gini(selection_2),2) + ', ⍺ = %s' % str(round(powerlaw.Fit(selection_2, discrete=True).alpha,2)) + ', 𝑯 = %s' % str(round(ent(pd.Series(selection_2)),2))
+    right_log.title.text = '%s, TTR = %s' % (t2, round(len(selection_2)/sum(selection_2),2)) + ', Gini = %s' % round(gini(selection_2),2) + ', ⍺ = %s' % str(round(powerlaw.Fit(selection_2, discrete=True).alpha,2)) + ', 𝑯 = %s' % str(round(ent(pd.Series(selection_2)),2))
     left_lin.title.text_font_size = '7pt'
     left_log.title.text_font_size = '7pt'
     right_lin.title.text_font_size = '7pt'
