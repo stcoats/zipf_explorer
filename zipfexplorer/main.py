@@ -135,8 +135,8 @@ def get_data(t1, t2):
     data["sum_y"]=data["freq_y"].sum()
     data["rank_x_new"] = data["freq_x"].rank(ascending=False, method="first")
     data["rank_y_new"] = data["freq_y"].rank(ascending=False, method="first")
-    data["rel_x_new"]=data["freq_x"]/data["freq_x"].sum()
-    data["rel_y_new"]=data["freq_y"]/data["freq_y"].sum()
+    data["rel_x_new"]=data["freq_x"]*10000/data["freq_x"].sum()
+    data["rel_y_new"]=data["freq_y"]*10000/data["freq_y"].sum()
     data["rel_diff_x_new"]=data["rel_x_new"]-data["rel_y_new"]
     data["rel_diff_y_new"]=data["rel_y_new"]-data["rel_x_new"]
     data=pd.concat([data,pd.DataFrame(data.apply(chisq,axis=1))],axis=1)
