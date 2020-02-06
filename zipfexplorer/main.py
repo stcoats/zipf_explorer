@@ -126,6 +126,7 @@ def get_data(t1, t2):
     #print(len(df1),len(df2))
     data = pd.merge(df1, df2, on='word',how='inner').fillna(0)
     data = data.dropna()
+    data = data[~data["word"].isin(ss[0:int(stopwords_1.value)])]
     #data = data["rel_x" > 0
     #data["rel_diff"]=round(data["rel_x"]-data["rel_y"],3)
     data["rel_diff_x"]=data["rel_x"]-data["rel_y"]
