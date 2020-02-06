@@ -137,6 +137,8 @@ def get_data(t1, t2):
     data["rank_y_new"] = data["freq_y"].rank(ascending=False, method="first")
     data["rel_x_new"]=data["freq_x"]/data["freq_x"].sum()
     data["rel_y_new"]=data["freq_y"]/data["freq_y"].sum()
+    data["rel_diff_x_new"]=data["rel_x_new"]-data["rel_y_new"]
+    data["rel_diff_y_new"]=data["rel_y_new"]-data["rel_x_new"]
     data=pd.concat([data,pd.DataFrame(data.apply(chisq,axis=1))],axis=1)
     data.columns = data.columns.astype(str)
     data=data.rename(index=str, columns={"0": "LL", "1": "pval"})
@@ -165,9 +167,9 @@ custom_hover.tooltips = """
 	.bk-tooltip>div:not(:first-child) {display:none;}
     </style>
     <b>word: </b> @word <br>
-    <b>rank: </b> @rank_x <br>
-    <b>freq: </b> @freq_x <br>
-    <b>per_10k: </b> @rel_x <br>
+    <b>rank: </b> @rank_x_new <br>
+    <b>freq: </b> @freq_x_new <br>
+    <b>per_10k: </b> @rel_x_new <br>
     <b>rel_diff: </b> @rel_diff <br>
     <b>log_l: </b> @LL <br>
     <b>p_val: </b> @pval <br>
