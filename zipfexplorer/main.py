@@ -132,6 +132,10 @@ def get_data(t1, t2):
     data["rel_diff_y"]=data["rel_y"]-data["rel_x"]
     data["sum_x"]=data["freq_x"].sum()
     data["sum_y"]=data["freq_y"].sum()
+    data["rank_x_new"] = data["freq_x"].rank(ascending=False, method="first")
+    data["rank_y_new"] = data["freq_y"].rank(ascending=False, method="first")
+    data["rel_x_new"]=data["freq_x"]/data["freq_x"].sum()
+    data["rel_y_new"]=data["freq_y"]/data["freq_y"].sum()
     data=pd.concat([data,pd.DataFrame(data.apply(chisq,axis=1))],axis=1)
     data.columns = data.columns.astype(str)
     data=data.rename(index=str, columns={"0": "LL", "1": "pval"})
@@ -172,7 +176,7 @@ TOOLS = "pan,box_zoom,wheel_zoom,box_select,reset,hover"
 
 left_lin = figure(tools=TOOLS,x_axis_type='linear', y_axis_type='linear', plot_width=500, plot_height=500, sizing_mode='fixed',
 	    output_backend="webgl")
-left_lin.circle('rank_x', 'rel_x', source=source,alpha=0.6, size=10,selection_color="red", hover_color="red")
+left_lin.circle('rank_x_new', 'rel_x_new', source=source,alpha=0.6, size=10,selection_color="red", hover_color="red")
 left_lin.yaxis.axis_label = "Frequency (per 10k words)"
 left_lin.xaxis.axis_label = "Rank"
 hoverL = left_lin.select(dict(type=HoverTool))
@@ -181,7 +185,7 @@ panel_llin = Panel(child=left_lin, title='linear')
 
 left_log = figure(tools=TOOLS,x_axis_type='log', y_axis_type='log', plot_width=500, plot_height=500, sizing_mode='fixed',
 	    output_backend="webgl")
-left_log.circle('rank_x', 'rel_x', source=source,alpha=0.6, size=10,selection_color="red", hover_color="red")
+left_log.circle('rank_x_new', 'rel_x_new', source=source,alpha=0.6, size=10,selection_color="red", hover_color="red")
 left_log.yaxis.axis_label = "Frequency (per 10k words)"
 left_log.xaxis.axis_label = "Rank"
 hoverL = left_log.select(dict(type=HoverTool))
@@ -190,7 +194,7 @@ panel_llog = Panel(child=left_log, title='log')
 
 right_lin = figure(tools=TOOLS,x_axis_type='linear',y_axis_type='linear', plot_width=500, plot_height=500, sizing_mode='fixed',
 	    output_backend="webgl")
-right_lin.circle('rank_y', 'rel_y', source=source,alpha=0.6, size=10,selection_color="red", hover_color="red")
+right_lin.circle('rank_y_new', 'rel_y_new', source=source,alpha=0.6, size=10,selection_color="red", hover_color="red")
 right_lin.yaxis.axis_label = "Frequency (per 10k words)"
 right_lin.xaxis.axis_label = "Rank"
 hoverR = right_lin.select(dict(type=HoverTool))
@@ -199,7 +203,7 @@ panel_rlin = Panel(child=right_lin, title='linear')
 
 right_log = figure(tools=TOOLS,x_axis_type='log',y_axis_type='log', plot_width=500, plot_height=500, sizing_mode='fixed',
 	    output_backend="webgl")
-right_log.circle('rank_y', 'rel_y', source=source,alpha=0.6, size=10,selection_color="red", hover_color="red")
+right_log.circle('rank_y_new', 'rel_y_new', source=source,alpha=0.6, size=10,selection_color="red", hover_color="red")
 right_log.yaxis.axis_label = "Frequency (per 10k words)"
 right_log.xaxis.axis_label = "Rank"
 hoverR = right_log.select(dict(type=HoverTool))
