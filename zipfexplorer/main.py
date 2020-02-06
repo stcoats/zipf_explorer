@@ -184,7 +184,7 @@ left_lin.circle('rank_x_new', 'rel_x_new', source=source,alpha=0.6, size=10,sele
 left_lin.yaxis.axis_label = "Frequency (per 10k words)"
 left_lin.xaxis.axis_label = "Rank"
 hoverL = left_lin.select(dict(type=HoverTool))
-hoverL.tooltips={"word": "@word","rank":"@rank_x","freq":"@freq_x","per_10k":"@rel_x","LL":"@LL","pval":"@pval"}
+hoverL.tooltips={"word": "@word","rank":"@rank_x_new","freq":"@freq_x","per_10k":"@rel_x_new","LL":"@LL","pval":"@pval"}
 panel_llin = Panel(child=left_lin, title='linear')
 
 left_log = figure(tools=TOOLS,x_axis_type='log', y_axis_type='log', plot_width=500, plot_height=500, sizing_mode='fixed',
@@ -193,7 +193,7 @@ left_log.circle('rank_x_new', 'rel_x_new', source=source,alpha=0.6, size=10,sele
 left_log.yaxis.axis_label = "Frequency (per 10k words)"
 left_log.xaxis.axis_label = "Rank"
 hoverL = left_log.select(dict(type=HoverTool))
-hoverL.tooltips={"word": "@word","rank":"@rank_x","freq":"@freq_x","per_10k":"@rel_x","LL":"@LL","pval":"@pval"}
+hoverL.tooltips={"word": "@word","rank":"@rank_x_new","freq":"@freq_x","per_10k":"@rel_x_new","LL":"@LL","pval":"@pval"}
 panel_llog = Panel(child=left_log, title='log')
 
 right_lin = figure(tools=TOOLS,x_axis_type='linear',y_axis_type='linear', plot_width=500, plot_height=500, sizing_mode='fixed',
@@ -202,7 +202,7 @@ right_lin.circle('rank_y_new', 'rel_y_new', source=source,alpha=0.6, size=10,sel
 right_lin.yaxis.axis_label = "Frequency (per 10k words)"
 right_lin.xaxis.axis_label = "Rank"
 hoverR = right_lin.select(dict(type=HoverTool))
-hoverR.tooltips={"word": "@word","rank":"@rank_y","freq":"@freq_y","per_10k":"@rel_y","LL":"@LL","pval":"@pval"}
+hoverR.tooltips={"word": "@word","rank":"@rank_y_new","freq":"@freq_y","per_10k":"@rel_y_new","LL":"@LL","pval":"@pval"}
 panel_rlin = Panel(child=right_lin, title='linear')
 
 right_log = figure(tools=TOOLS,x_axis_type='log',y_axis_type='log', plot_width=500, plot_height=500, sizing_mode='fixed',
@@ -211,7 +211,7 @@ right_log.circle('rank_y_new', 'rel_y_new', source=source,alpha=0.6, size=10,sel
 right_log.yaxis.axis_label = "Frequency (per 10k words)"
 right_log.xaxis.axis_label = "Rank"
 hoverR = right_log.select(dict(type=HoverTool))
-hoverR.tooltips={"word": "@word","rank":"@rank_y","freq":"@freq_y","per_10k":"@rel_y","LL":"@LL","pval":"@pval"}
+hoverR.tooltips={"word": "@word","rank":"@rank_y_new","freq":"@freq_y","per_10k":"@rel_y_new","LL":"@LL","pval":"@pval"}
 panel_rlog = Panel(child=right_log, title='log')
 
 tabs_l = Tabs(tabs=[panel_llin,panel_llog])
