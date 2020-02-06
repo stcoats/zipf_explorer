@@ -219,19 +219,19 @@ tabs_r = Tabs(tabs=[panel_rlin,panel_rlog])
 formater =  NumberFormatter(format='0.00')
 
 columns_l = [
-    TableColumn(field="rank_x", title="rank"),
+    TableColumn(field="rank_x_new", title="rank"),
     TableColumn(field="word", title="word"),
     TableColumn(field="freq_x", title="freq"),
-    TableColumn(field="rel_x", title="rel_freq",formatter=formater),
-    TableColumn(field="rel_diff_x", title="rel_diff",formatter=formater),
+    TableColumn(field="rel_x_new", title="rel_freq",formatter=formater),
+    TableColumn(field="rel_diff_x_new", title="rel_diff",formatter=formater),
     TableColumn(field="LL", title="Log-likelihood",formatter=formater)
 ]
 columns_r = [
-    TableColumn(field="rank_y", title="rank"),
+    TableColumn(field="rank_y_new", title="rank"),
     TableColumn(field="word", title="word"),
     TableColumn(field="freq_y", title="freq"),
-    TableColumn(field="rel_y", title="rel_freq",formatter=formater),
-    TableColumn(field="rel_diff_y", title="rel_diff",formatter=formater),
+    TableColumn(field="rel_y_new", title="rel_freq",formatter=formater),
+    TableColumn(field="rel_diff_y_new", title="rel_diff",formatter=formater),
     TableColumn(field="LL", title="Log-likelihood",formatter=formater)
 ]
 top10_l = DataTable(source=source, columns=columns_l,width=500, height=350)
