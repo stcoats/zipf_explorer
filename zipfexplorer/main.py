@@ -271,7 +271,7 @@ def update(selected=None):
     t1, t2 = ticker1.value, ticker2.value
     data = get_data(t1, t2)
     update_stats(data, data[1], data[2])
-    source.data = source.from_df(data[0])
+    source.data = source.from_df(data[0][~data[0]["word"].isin(ss[0:int(stopwords_1.value)])])
     #selection_1 = np.array(load_ticker(t1)[~load_ticker(t1)["word"].isin(ss[0:int(stopwords_1.value)])]["freq"].astype(float))
     selection_1 = np.array(data[0][~data[0]["word"].isin(ss[0:int(stopwords_1.value)])]["freq_x"].astype(float))
     #selection_2 = np.array(load_ticker(t2)[~load_ticker(t2)["word"].isin(ss[0:int(stopwords_1.value)])]["freq"].astype(float))
