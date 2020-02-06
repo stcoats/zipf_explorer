@@ -153,8 +153,9 @@ user2 = FileInput(accept='.csv,.txt,.doc,.docx')
 
 stopwords_1 = Select(title="Remove most frequent words:", value="0", options=["0","10", "20", "50", "100", "200"])
 
-source = ColumnDataSource(data=dict(word=[],rank_x=[],rank_y=[],freq_x=[],freq_y=[],
-		    sum_x=[],sum_y=[],rel_x=[],rel_y=[],rel_diff=[],LL=[],pval=[]))
+source = ColumnDataSource(data=dict(word=[],rank_x=[],rank_x_new=[],rank_y=[],
+				    rank_y_new=[],freq_x=[],freq_y=[],
+		    sum_x=[],sum_y=[],rel_x=[],rel_x_new=[],rel_y=[],rel_y_new=[],rel_diff=[],LL=[],pval=[]))
 
 custom_hover= HoverTool()
 
