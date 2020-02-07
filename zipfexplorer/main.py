@@ -140,7 +140,7 @@ def to_freq_list(text):
     #dist = nltk.FreqDist([x.lower() for x in words if x.isalpha()])
     dist = nltk.FreqDist([x.lower().strip() for x in ctext1_filtered_tokens if not regex.match("\p{Punct}",x) and not x.endswith(".")])
     vv=OrderedDict(sorted(dist.items(), key=lambda x:x[1]) )
-    vv1=collections.OrderedDict(reversed(list(vv.items())))
+    vv1=OrderedDict(reversed(list(vv.items())))
     df = pd.DataFrame(list(vv1.items()))
     df.columns = ["word","freq"]
     return df
