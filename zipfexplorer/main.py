@@ -13,6 +13,11 @@ import numpy as np
 import chardet
 from scipy.stats import chi2_contingency
 from nltk.tokenize import word_tokenize
+from spacy.tokenizer import Tokenizer
+from spacy.lang.en import English
+nlp = English()
+nlp.max_length = 5000000
+tokenizer = Tokenizer(nlp.vocab)
 from nltk import FreqDist
 import nltk
 import regex
@@ -25,26 +30,63 @@ stopw_file = join(dirname(__file__),'data', 'Gutenberg_200words.txt')
 words=open(stopw_file).read()
 ss=words.split()
 
-DEFAULT_TICKERS=  ['Brown_TOTAL', 'Brown_adventure', 'Brown_belles_lettres',
-		   'Brown_editorial', 'Brown_fiction', 'Brown_government',
-		   'Brown_hobbies', 'Brown_humor', 'Brown_learned', 'Brown_lore',
-		   'Brown_mystery', 'Brown_news', 'Brown_religion', 'Brown_reviews',
-		   'Brown_romance', 'Brown_science_fiction', 'Frown_TOTAL',
-		   'aesop-fables', 'anonymous-book_mormon', 'austen-emma',
-		   'austen-persuasion', 'austen-sense', 'bible-kjv', 'blake-poems',
-		   'bryant-stories', 'burgess-busterbrown', 'carroll-alice',
-		   'chesterton-ball', 'chesterton-brown', 'chesterton-thursday',
-		   'conan_doyle-return_sherlock', 'dickens-christmas_carol', 
-		   'edgeworth-parents', 'hamilton_jay_madison-fed',
-		   'hardy-return_of_the_native', 'hemingway-farewell',
-		   'inaugural_addresses', 'james-the_american', 'james-the_europeans',
-		   'london-call_of_the_wild', 'marx_engels-communist',
-		   'melville-moby_dick', 'milton-paradise', 'plato-republic',
-		   'shakespeare-caesar', 'shakespeare-hamlet', 'shakespeare-macbeth',
-		   'shelley-frankenstein', 'sinclair-the_jungle', 'sophocles-oedipus',
-		   'stowe-uncle_toms_cabin', 'twain-huckleberry', 'twain-tom_sawyer',
-		   'wells-war_of_the_worlds', 'whitman-leaves', 'wilde-dorian_gray',
-		   'User_input']
+DEFAULT_TICKERS=  ['aesop-fables',
+ 'anonymous-book_mormon',
+ 'austen-emma',
+ 'austen-persuasion',
+ 'austen-sense',
+ 'bible-kjv',
+ 'blake-poems',
+ 'brown_adventure',
+ 'brown_belles_lettres',
+ 'brown_editorial',
+ 'brown_fiction',
+ 'brown_government',
+ 'brown_hobbies',
+ 'brown_humor',
+ 'brown_learned',
+ 'brown_lore',
+ 'brown_mystery',
+ 'brown_news',
+ 'brown_religion',
+ 'brown_reviews',
+ 'brown_romance',
+ 'brown_science_fiction',
+ 'brown_total',
+ 'bryant-stories',
+ 'burgess-busterbrown',
+ 'carroll-alice',
+ 'chesterton-ball',
+ 'chesterton-brown',
+ 'chesterton-thursday',
+ 'conan_doyle-return_sherlock',
+ 'dickens-christmas_carol',
+ 'edgeworth-parents',
+ 'frown_total',
+ 'hamilton_jay_madison-fed',
+ 'hardy-return_of_the_native',
+ 'hemingway-farewell',
+ 'inaugural-addresses',
+ 'james-the_american',
+ 'james-the_europeans',
+ 'london-call_of_the_wild',
+ 'marx_engels-communist',
+ 'melville-moby_dick',
+ 'milton-paradise',
+ 'plato-republic',
+ 'shakespeare-caesar',
+ 'shakespeare-hamlet',
+ 'shakespeare-macbeth',
+ 'shelley-frankenstein',
+ 'sinclair-the_jungle',
+ 'sophocles-oedipus',
+ 'stowe-uncle_toms_cabin',
+ 'twain-huckleberry',
+ 'twain-tom_sawyer',
+ 'wells-war_of_the_worlds',
+ 'whitman-leaves',
+ 'wilde-dorian_gray',
+ 'user_input']
 
 def nix(val, lst):
     return [x for x in lst if x != val]
@@ -68,7 +110,7 @@ def gini(array):
 
 def ent(data):
     p_data= data.value_counts()/len(data) # calculates the probabilities
-    entropy=scipy.stats.entropy(p_data)  # input probabilities to get the entropy 
+    entropy=scipy.stats.entropy(p_data, base=2)  # input probabilities to get the entropy 
     return entropy
   
 def simp(data):
@@ -89,16 +131,20 @@ def simp(data):
 #    return data
 
 def to_freq_list(text):
-    words = word_tokenize(text)
-    dist = FreqDist([x.lower() for x in words if regex.search("[\p{Letter}0-9]",x)])
+    #words = nltk.tokenize.word_tokenize(text)
+    #dist = FreqDist([x.lower() for x in words if regex.search("[\p{Letter}0-9]",x)])
+    words = [x.text.lower().strip() for x in nlp(text)][1:]
+    ctext1_filtered_tokens = [x for x in words if not x in ((":","_",'—',"",".",",","!","-","?"))]
+    #dist = nltk.FreqDist([x.lower() for x in words if x.isalpha()])
+    dist = nltk.FreqDist([x.lower() for x in ctext1_filtered_tokens if not regex.match("\p{Punct}",x) and not x.endswith(".")])
     vv=OrderedDict(sorted(dist.items(), key=lambda x:x[1]) )
-    vv1=OrderedDict(reversed(list(vv.items())))
+    vv1=collections.OrderedDict(reversed(list(vv.items())))
     df = pd.DataFrame(list(vv1.items()))
-    df.index += 1
-    df.columns = ['word','freq']
+    df.columns = ["word","freq"]
     return df
+  
 def get_data(t1, t2):
-    if ticker1.value == 'User_input':
+    if ticker1.value == 'user_input':
       csv = base64.b64decode(user1.value)
       #text = textract.process(user1.value) #if user1.value.endswith(tuple(ext)) else base64.b64decode(user1.value) 
       enc = chardet.detect(csv)
@@ -111,7 +157,7 @@ def get_data(t1, t2):
       df1 = pd.read_csv(df1name,index_col=0)
       df1["rel"]=df1["freq"]*10000/df1["freq"].sum()
       df1["rank"]=df1.index
-    if ticker2.value == 'User_input':
+    if ticker2.value == 'user_input':
       csv = base64.b64decode(user2.value)
       #df2 = pd.read_csv(BytesIO(csv))
       enc = chardet.detect(csv)
@@ -256,12 +302,12 @@ def ticker2_change(attrname, old, new):
     update()
     
 def user1_change(attrname, old, new):
-    ticker1.value = "User_input"
+    ticker1.value = "user_input"
     #ticker2.options = nix(new, DEFAULT_TICKERS)
     update()
 
 def user2_change(attrname, old, new):
-    ticker2.value = "User_input"
+    ticker2.value = "user_input"
     #ticker1.options = nix(new, DEFAULT_TICKERS)
     update()
 dict1 = {

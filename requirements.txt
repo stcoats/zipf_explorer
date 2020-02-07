@@ -6,3 +6,4 @@ powerlaw==1.4.6
 nltk==3.4.5
 regex==2018.2.21
 chardet==3.0.4
+spacy==2.2.3
