@@ -13,13 +13,13 @@ import numpy as np
 import chardet
 from scipy.stats import chi2_contingency
 from nltk.tokenize import word_tokenize
-from spacy.tokenizer import Tokenizer
+#from spacy.tokenizer import Tokenizer
 #from spacy.lang.en import English
 #nlp = English()
-import en_core_web_sm
-nlp= en_core_web_sm.load()
-nlp.max_length = 5000000
-tokenizer = Tokenizer(nlp.vocab)
+#import en_core_web_sm
+#nlp= en_core_web_sm.load()
+#nlp.max_length = 5000000
+#tokenizer = Tokenizer(nlp.vocab)
 from nltk import FreqDist
 import nltk
 import regex
@@ -133,12 +133,12 @@ def simp(data):
 #    return data
 
 def to_freq_list(text):
-    #words = nltk.tokenize.word_tokenize(text)
+    words = nltk.tokenize.word_tokenize(text)
     #dist = FreqDist([x.lower() for x in words if regex.search("[\p{Letter}0-9]",x)])
-    words = [x.text.lower().strip() for x in nlp(text)][1:]
+    #words = [x.text.lower().strip() for x in nlp(text)][1:]
     ctext1_filtered_tokens = [x for x in words if not x in ((":","_",'—',"",".",",","!","-","?"))]
     #dist = nltk.FreqDist([x.lower() for x in words if x.isalpha()])
-    dist = nltk.FreqDist([x.lower() for x in ctext1_filtered_tokens if not regex.match("\p{Punct}",x) and not x.endswith(".")])
+    dist = nltk.FreqDist([x.lower().strip() for x in ctext1_filtered_tokens if not regex.match("\p{Punct}",x) and not x.endswith(".")])
     vv=OrderedDict(sorted(dist.items(), key=lambda x:x[1]) )
     vv1=collections.OrderedDict(reversed(list(vv.items())))
     df = pd.DataFrame(list(vv1.items()))
