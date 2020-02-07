@@ -133,7 +133,7 @@ def simp(data):
 #    return data
 
 def to_freq_list(text):
-    words = nltk.tokenize.word_tokenize(text)
+    words = word_tokenize(text)
     #dist = FreqDist([x.lower() for x in words if regex.search("[\p{Letter}0-9]",x)])
     #words = [x.text.lower().strip() for x in nlp(text)][1:]
     ctext1_filtered_tokens = [x for x in words if not x in ((":","_",'—',"",".",",","!","-","?"))]
