@@ -21,7 +21,7 @@ from nltk.tokenize import word_tokenize
 #nlp.max_length = 5000000
 #tokenizer = Tokenizer(nlp.vocab)
 from nltk import FreqDist
-#import nltk
+import nltk
 import regex
 from collections import OrderedDict
 from io import StringIO, BytesIO
