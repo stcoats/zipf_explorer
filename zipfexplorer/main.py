@@ -27,7 +27,7 @@ from collections import OrderedDict
 from io import StringIO, BytesIO
 import base64
 
-#nltk.download('punkt')
+nltk.download('punkt')
 stopw_file = join(dirname(__file__),'data', 'Gutenberg_200words.txt')
 words=open(stopw_file).read()
 ss=words.split()
