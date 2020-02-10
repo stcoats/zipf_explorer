@@ -133,9 +133,9 @@ def simp(data):
 #    return data
 
 def to_freq_list(text):
-    #words = word_tokenize(text)
+    words = word_tokenize(text)
     #dist = FreqDist([x.lower() for x in words if regex.search("[\p{Letter}0-9]",x)])
-    words = [x.text.lower().strip() for x in nlp(text)][1:]
+    #words = [x.text.lower().strip() for x in nlp(text)][1:]
     ctext1_filtered_tokens = [x for x in words if not x in ((":","_",'—',"",".",",","!","-","?"))]
     #dist = nltk.FreqDist([x.lower() for x in words if x.isalpha()])
     dist = FreqDist([x.lower().strip() for x in ctext1_filtered_tokens if not regex.match("\p{Punct}",x) and not x.endswith(".")])
