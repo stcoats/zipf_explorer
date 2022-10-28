@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="//cc.oulu.fi/~scoats/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="//cc.oulu.fi/~scoats/favicon.ico" type="image/ico" />
+    <link rel="stylesheet" href="./fontImport.css" type="text/css" />
+    <title>App</title>
+    {{ bokeh_css }}
+    {{ bokeh_js }}
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+    </script>
+    <script type="text/javascript" async
+      src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+    <style type="text/css">
+      {% include './fontImport.css' %}
+    </style>
+  </head>
+  <body>
+    <H1><b>ZipfExplorer</b></H1>
+    <p>This tool lets you compare the frequencies of shared word types in different 
+    texts or corpora.</p>
+    <p>Select texts or corpora to explore with the drop-down menus, or use the buttons
+    to upload your own files (in .txt format). The plot x-axes 
+    show word frequency ranks, while the y-axes show the relative frequency per 10k words.
+    The circles represent individual word types. Hovering over a word shows its rank, 
+    frequency, relative frequency (per 10k words), a log-likelihood 
+    measure (<a href="https://en.wikipedia.org/wiki/G-test" target="_blank">Dunning's G</a>) 
+    compared to the other text, and the log-likelihood p-value. 
+    Use the plot tools (above the second plot) to drag the plots around, select specific 
+    words, zoom in and out, and reset the plots.</p>
+    <p>Selecting words on the plot or on the sortable tables below highlights them. 
+    The tables show word rank, frequency, difference in relative frequency per 10k words 
+    compared to the other text, and log-likelihood.</p>
+    <p>Words with positive rel_diff values are more frequent in the first text; those 
+    with negative values in the second text.</p>
+    <p>With the “Remove most frequent words” drop-down menu, up to 200 of the most frequent 
+    words in English can be removed from the plots/tables. This can help to highlight 
+    content differences between the texts. The frequent words are from a corpus of
+    the English-language texts in the <a href="http://www.gutenberg.org/wiki/Main_Page" target="_blank">
+    Project Gutenberg</a> made available by <a href="http://www.sketchengine.eu" target="_blank">
+    Sketch Engine</a>.</p>
+    <p>Several measures of lexical diversity are provided: the type-token ratio (TTR), 
+    the <a href="http://mathworld.wolfram.com/GiniCoefficient.html" target="_blank">Gini 
+    coefficient</a>, which ranges from 0 (all words have the same frequency) to a 
+    theoretical maximum of 1 (all words have frequency zero except one word, $n 
+    \rightarrow \infty$), the alpha parameter of the fitted power law function, and the 
+    Shannon entropy 𝑯.  
+    <p>The data consist of several literary texts and a corpus of inaugural addresses of 
+    U.S. presidents from 1789–2017 (from 
+    <a href="https://www.nltk.org/" target="_blank">NLTK</a>), a number of texts scraped
+    from <a href="http://www.gutenberg.org/wiki/Main_Page" target="_blank">Project Gutenberg</a>, the 
+    <a href="http://clu.uni.no/icame/manuals/BROWN/INDEX.HTM" target="_blank">Brown Corpus</a> 
+    and its subsections, and the 
+    <a href="http://clu.uni.no/icame/manuals/FROWN/INDEX.HTM" target="_blank">Freiburg-Brown 
+    Corpus of American English</a>, available via Clarin-NO's <a href="http://clarino.uib.no/korpuskel/page" target="_blank">Corpuscle</a> 
+    tool.</p>
+    <p>The Heroku server shuts off if there has been no user input for a while -- refresh
+    the page to re-start the app in this case.</p>
+    <br>
+    {{ plot_div|indent(8) }}
+    {{ plot_script|indent(8) }}
+    <br>
+    <p>Tool created by <a href="http://cc.oulu.fi/~scoats" target="_blank">Steven Coats</a></p>
+    <p>If you wish, please cite with: Coats, Steven. (2020). <a href="http://ceur-ws.org/Vol-2612/short6.pdf" target="_blank">Comparing word frequencies and lexical diversity with the ZipfExplorer tool</a>. In Sanita Reinsone, Inguna Skadiņa, Anda Baklāne and Jānis Daugavieti (eds.), <i>Proceedings of the 5th Digital Humanities in the Nordic Countries Conference, Riga, Latvia, October 21–23, 2020, 219–225</i>. Aachen, Germany: CEUR.
+  </body>
+</html>
