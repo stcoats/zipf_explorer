@@ -11,7 +11,7 @@ def webserver():
     app_directory = os.path.abspath("zipfexplorer")
 
     # Use bokeh serve to serve the app
-    main(["bokeh", "serve", app_directory, "--port", "8080", "--allow-websocket-origin", "zipfexplorer-zipf.rahtiapp.fi", "--address", "0.0.0.0", "--use-xheaders"])
+    main(["bokeh", "serve", app_directory, "--port", "8080", "--allow-websocket-origin", "zipfexplorer-zipf6.rahtiapp.fi", "--address", "0.0.0.0", "--use-xheaders"])
 
 if __name__ == '__main__':
     webserver()
